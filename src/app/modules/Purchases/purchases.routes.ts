@@ -1,9 +1,5 @@
+import express from 'express';
 
+const router = express.Router();
 
-import express from 'express'
-
-const router = express.Router()
-
-
-
-export const PurchasesRoutes = router
+export const PurchasesRoutes = router;

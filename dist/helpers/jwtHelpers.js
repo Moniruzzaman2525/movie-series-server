@@ -8,7 +8,11 @@ const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const generateToken = (payload, secret, expiresIn) => {
     const token = jsonwebtoken_1.default.sign(payload, secret, {
         expiresIn,
+<<<<<<< HEAD
         algorithm: 'HS256'
+=======
+        algorithm: 'HS256',
+>>>>>>> 7d7c4759b342087cf4a68961a776024a2d4d5337
     });
     return token;
 };
@@ -20,5 +24,9 @@ const verifyToken = (token, secret) => jsonwebtoken_1.default.verify(token, secr
 exports.jwtHelpers = {
     generateToken,
     decodeToken,
+<<<<<<< HEAD
     verifyToken
+=======
+    verifyToken,
+>>>>>>> 7d7c4759b342087cf4a68961a776024a2d4d5337
 };

@@ -23,7 +23,11 @@ const createUser = (0, catchAsync_1.default)((req, res, next) => __awaiter(void 
         statuscode: http_status_1.default.CREATED,
         success: true,
         message: 'User create successfully',
+<<<<<<< HEAD
         data: result
+=======
+        data: result,
+>>>>>>> 7d7c4759b342087cf4a68961a776024a2d4d5337
     });
 }));
 exports.UserController = {

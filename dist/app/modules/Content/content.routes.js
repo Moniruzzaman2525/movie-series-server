@@ -11,8 +11,23 @@ const auth_1 = require("../../middlewares/auth");
 const client_1 = require("@prisma/client");
 const router = express_1.default.Router();
 router.get('/', content_controller_1.contentController.getAllContent);
+<<<<<<< HEAD
 router.post('/', utils_1.upload.single('file'), (0, auth_1.auth)(client_1.UserRole.ADMIN, client_1.UserRole.USER), (req, res, next) => {
     req.body = JSON.parse(req.body.data);
     return content_controller_1.contentController.createContent(req, res, next);
 });
+=======
+router.get('/:id', content_controller_1.contentController.getSingleContent);
+router.post('/', utils_1.upload.single('file'), (0, auth_1.auth)(client_1.UserRole.ADMIN), (req, res, next) => {
+    req.body = JSON.parse(req.body.data);
+    return content_controller_1.contentController.createContent(req, res, next);
+});
+router.patch('/:id', (0, auth_1.auth)(client_1.UserRole.ADMIN), utils_1.upload.single('file'), (req, res, next) => {
+    if (req.body.data) {
+        req.body = JSON.parse(req.body.data);
+    }
+    return content_controller_1.contentController.updateContent(req, res, next);
+});
+router.delete('/:id', (0, auth_1.auth)(client_1.UserRole.ADMIN), content_controller_1.contentController.deleteContent);
+>>>>>>> 7d7c4759b342087cf4a68961a776024a2d4d5337
 exports.ContentRouter = router;

@@ -18,11 +18,19 @@ const bcrypt_1 = __importDefault(require("bcrypt"));
 const createUser = (payload) => __awaiter(void 0, void 0, void 0, function* () {
     const existingUser = yield prisma_1.default.user.findFirst({
         where: {
+<<<<<<< HEAD
             email: payload.email
         }
     });
     if (existingUser) {
         throw new Error("User with this email already exists");
+=======
+            email: payload.email,
+        },
+    });
+    if (existingUser) {
+        throw new Error('User with this email already exists');
+>>>>>>> 7d7c4759b342087cf4a68961a776024a2d4d5337
     }
     const hashPassword = yield bcrypt_1.default.hash(payload.password, 12);
     const result = yield prisma_1.default.user.create({
@@ -32,8 +40,13 @@ const createUser = (payload) => __awaiter(void 0, void 0, void 0, function* () {
             name: true,
             email: true,
             createAt: true,
+<<<<<<< HEAD
             updateAt: true
         }
+=======
+            updateAt: true,
+        },
+>>>>>>> 7d7c4759b342087cf4a68961a776024a2d4d5337
     });
     return result;
 });

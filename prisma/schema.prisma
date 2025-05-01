@@ -28,29 +28,32 @@ model User {
 }
 
 model Video {
-  id                String   @id @default(uuid())
+  id                String      @id @default(uuid())
   title             String
-  genre             String
+  genre             GenreOption
   thumbnailImage    String?
   video             String?
   director          String
   releaseYear       Int
+  category          Category
   cast              String
   streamingPlatform String
   description       String
-  like              Int      @default(0)
+  like              Int         @default(0)
   price             Float
   rating            Float
-  dislike           Int      @default(0)
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
+  dislike           Int         @default(0)
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
 
   userId String
   user   User   @relation(fields: [userId], references: [id])
 
-  Review    Review[]
-  WatchList WatchList[]
-  Purchase  Purchase[]
+  review    Review[]
+  watchList WatchList[]
+  purchase  Purchase[]
+  comment   Comment[]
+  Like      Like[]
 
   @@map("video")
 }
@@ -61,8 +64,8 @@ model Like {
   userId String
   user   User   @relation(fields: [userId], references: [id])
 
-  reviewId String
-  review   Review @relation(fields: [reviewId], references: [id])
+  videoId String
+  video   Video  @relation(fields: [videoId], references: [id])
 
   createdAt DateTime @default(now())
 
@@ -82,10 +85,7 @@ model Review {
   content   String
   createdAt DateTime @default(now())
 
-  isApproved Boolean @default(false)
-
-  like    Like[]
-  Comment Comment[]
+   status ReviewStatus @default(PENDING)
 
   @@map("reviews")
 }
@@ -96,16 +96,17 @@ model Comment {
   userId String
   user   User   @relation(fields: [userId], references: [id])
 
-  reviewId String
-  review   Review @relation(fields: [reviewId], references: [id])
+  videoId String
+  video   Video  @relation(fields: [videoId], references: [id])
 
-  isApproved Boolean @default(false)
+  status CommentStatus @default(PENDING)
 
   content  String
   createAt DateTime @default(now())
 
   @@map("comments")
 }
+
 
 model WatchList {
   id String @id @default(uuid())
@@ -138,6 +139,23 @@ model Purchase {
   @@map("purchases")
 }
 
+enum ReviewStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+enum CommentStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+
+enum Category {
+  MOVIE
+  SERIES
+}
+
 enum PurchaseType {
   BUY
   RENT
@@ -156,4 +174,34 @@ enum StreamingPlatform {
   APPLE
   YOUTUBE
   SPOTIFY
+}
+
+enum GenreOption {
+  ACTION
+  ADVENTURE
+  ANIMATION
+  COMEDY
+  DRAMA
+  HORROR
+  MYSTERY
+  ROMANCE
+  SCIENCE_FICTION
+  THRILLER
+  FANTASY
+  DOCUMENTARY
+  CRIME
+  HISTORICAL
+  MUSIC
+  WAR
+  WESTERN
+  FAMILY
+  BIOGRAPHY
+  SPORT
+  MUSICAL
+  SUPERHERO
+  PSYCHOLOGICAL
+  SLICE_OF_LIFE
+  TRAGEDY
+  POLITICAL
+  SATIRE
 }

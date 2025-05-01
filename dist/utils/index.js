@@ -24,13 +24,23 @@ const storage = multer_1.default.diskStorage({
     },
     filename: function (req, file, cb) {
         cb(null, file.originalname);
+<<<<<<< HEAD
     }
+=======
+    },
+>>>>>>> 7d7c4759b342087cf4a68961a776024a2d4d5337
 });
 cloudinary_1.v2.config({
     cloud_name: config_1.default.cloud.cloud_name,
     api_key: config_1.default.cloud.api_key,
+<<<<<<< HEAD
     api_secret: config_1.default.cloud.api_secret
 });
+=======
+    api_secret: config_1.default.cloud.api_secret,
+});
+//* Upload to Cloudinary
+>>>>>>> 7d7c4759b342087cf4a68961a776024a2d4d5337
 const uploadToCloudinary = (file) => __awaiter(void 0, void 0, void 0, function* () {
     return new Promise((resolve, reject) => {
         cloudinary_1.v2.uploader.upload(file.path, (error, result) => {

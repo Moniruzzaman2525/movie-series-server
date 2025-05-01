@@ -24,7 +24,11 @@ const addReview = (0, catchAsync_1.default)((req, res, next) => __awaiter(void 0
         statuscode: http_status_1.default.CREATED,
         success: true,
         message: 'Review add successfully',
+<<<<<<< HEAD
         data: result
+=======
+        data: result,
+>>>>>>> 7d7c4759b342087cf4a68961a776024a2d4d5337
     });
 }));
 const editReview = (0, catchAsync_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
@@ -35,7 +39,11 @@ const editReview = (0, catchAsync_1.default)((req, res, next) => __awaiter(void 
         statuscode: http_status_1.default.OK,
         success: true,
         message: 'Review edit successfully',
+<<<<<<< HEAD
         data: result
+=======
+        data: result,
+>>>>>>> 7d7c4759b342087cf4a68961a776024a2d4d5337
     });
 }));
 const deleteReview = (0, catchAsync_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
@@ -46,11 +54,40 @@ const deleteReview = (0, catchAsync_1.default)((req, res, next) => __awaiter(voi
         statuscode: http_status_1.default.OK,
         success: true,
         message: 'Review delete successfully',
+<<<<<<< HEAD
         data: result
+=======
+        data: result,
+    });
+}));
+const getSingleReview = (0, catchAsync_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const reviewId = req.params.id;
+    const result = yield reviews_services_1.ReviewServices.getSingleReview(reviewId);
+    (0, sendResponse_1.default)(res, {
+        statuscode: http_status_1.default.OK,
+        success: true,
+        message: 'Review delete successfully',
+        data: result,
+    });
+}));
+const getReview = (0, catchAsync_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield reviews_services_1.ReviewServices.getReview();
+    (0, sendResponse_1.default)(res, {
+        statuscode: http_status_1.default.OK,
+        success: true,
+        message: 'Review delete successfully',
+        data: result,
+>>>>>>> 7d7c4759b342087cf4a68961a776024a2d4d5337
     });
 }));
 exports.ReviewController = {
     addReview,
     editReview,
+<<<<<<< HEAD
     deleteReview
+=======
+    deleteReview,
+    getSingleReview,
+    getReview
+>>>>>>> 7d7c4759b342087cf4a68961a776024a2d4d5337
 };

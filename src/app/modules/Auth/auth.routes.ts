@@ -1,13 +1,10 @@
+import express from 'express';
+import { AuthController } from './auth.controller';
 
+const router = express.Router();
 
-import express from "express"
-import { AuthController } from "./auth.controller"
+router.post('/', AuthController.loginUser);
+router.post('/forget-password', AuthController.forgetPassword);
+router.post('/reset-password', AuthController.resetPassword);
 
-
-const router = express.Router()
-
-router.post('/', AuthController.loginUser)
-router.post('/forget-password', AuthController.forgetPassword)
-router.post('/reset-password', AuthController.resetPassword)
-
-export const AuthRouters = router
+export const AuthRouters = router;
