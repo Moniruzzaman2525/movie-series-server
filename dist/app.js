@@ -16,11 +16,7 @@ app.use((0, cookie_parser_1.default)());
 app.use('/api/v1', routes_1.default);
 app.get('/', (req, res) => {
     res.send({
-<<<<<<< HEAD
-        message: 'Movie series server is running...'
-=======
         message: 'Movie series server is running...',
->>>>>>> 7d7c4759b342087cf4a68961a776024a2d4d5337
     });
 });
 app.use(globalErrorHandler_1.default);

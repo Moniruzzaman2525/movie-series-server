@@ -15,28 +15,15 @@ exports.default = {
         refresh_token_expires_in: process.env.REFRESH_TOKEN_EXPIRES_IN,
         reset_password_secret: process.env.RESET_PASSWORD_TOKEN,
         reset_password_token_expire_in: process.env.RESET_TOKEN_EXPIRES_IN,
-<<<<<<< HEAD
-        reset_password_link: process.env.RESET_PASSWORD_LINK
-=======
         reset_password_link: process.env.RESET_PASSWORD_LINK,
->>>>>>> 7d7c4759b342087cf4a68961a776024a2d4d5337
     },
     cloud: {
         cloud_name: process.env.CLOUD_NAME,
         api_key: process.env.CLOUD_API_KEY,
-<<<<<<< HEAD
-        api_secret: process.env.CLOUD_API_SECRET
-    },
-    emailSender: {
-        email: process.env.EMAIL,
-        app_pass: process.env.APP_PASS
-    }
-=======
         api_secret: process.env.CLOUD_API_SECRET,
     },
     emailSender: {
         email: process.env.EMAIL,
         app_pass: process.env.APP_PASS,
     },
->>>>>>> 7d7c4759b342087cf4a68961a776024a2d4d5337
 };

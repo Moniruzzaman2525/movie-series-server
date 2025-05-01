@@ -21,7 +21,7 @@ const unlikeVideo = catchAsync(async (req, res, next) => {
     sendResponse(res, {
         statuscode: httpStatus.CREATED,
         success: true,
-        message: 'Video un like successfully',
+        message: 'Video unlike successfully',
         data: result,
     });
 });

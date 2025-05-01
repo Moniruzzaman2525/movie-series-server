@@ -15,31 +15,19 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.auth = void 0;
 const jwtHelpers_1 = require("../../helpers/jwtHelpers");
 const config_1 = __importDefault(require("../../config"));
-<<<<<<< HEAD
-const ApiError_1 = __importDefault(require("../errors/ApiError"));
-=======
 const apiError_1 = __importDefault(require("../errors/apiError"));
->>>>>>> 7d7c4759b342087cf4a68961a776024a2d4d5337
 const http_status_1 = __importDefault(require("http-status"));
 const auth = (...roles) => {
     return (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
         try {
             const token = req.headers.authorization;
             if (!token) {
-<<<<<<< HEAD
-                throw new ApiError_1.default(http_status_1.default.UNAUTHORIZED, 'You are not authorized');
-=======
                 throw new apiError_1.default(http_status_1.default.UNAUTHORIZED, 'You are not authorized');
->>>>>>> 7d7c4759b342087cf4a68961a776024a2d4d5337
             }
             const verifiedUser = jwtHelpers_1.jwtHelpers.verifyToken(token, config_1.default.jwt.jwt_secret);
             req.user = verifiedUser;
             if (roles.length && !roles.includes(verifiedUser.role)) {
-<<<<<<< HEAD
-                throw new ApiError_1.default(http_status_1.default.FORBIDDEN, 'You are not authorized');
-=======
                 throw new apiError_1.default(http_status_1.default.FORBIDDEN, 'You are not authorized');
->>>>>>> 7d7c4759b342087cf4a68961a776024a2d4d5337
             }
             next();
         }

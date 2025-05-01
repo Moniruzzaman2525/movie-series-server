@@ -27,12 +27,8 @@ exports.contentService = void 0;
 const http_status_1 = __importDefault(require("http-status"));
 const utils_1 = require("../../../utils");
 const client_1 = require("@prisma/client");
-<<<<<<< HEAD
-const ApiError_1 = __importDefault(require("../../errors/ApiError"));
-=======
 const content_constans_1 = require("./content.constans");
 const apiError_1 = __importDefault(require("../../errors/apiError"));
->>>>>>> 7d7c4759b342087cf4a68961a776024a2d4d5337
 const prisma = new client_1.PrismaClient();
 const createContent = (req) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -42,24 +38,11 @@ const createContent = (req) => __awaiter(void 0, void 0, void 0, function* () {
             req.body.thumbnailImage = uploadImage.secure_url;
         }
         const content = yield prisma.video.create({
-<<<<<<< HEAD
-            data: req.body
-=======
             data: req.body,
->>>>>>> 7d7c4759b342087cf4a68961a776024a2d4d5337
         });
         return content;
     }
     catch (err) {
-<<<<<<< HEAD
-        throw new ApiError_1.default(http_status_1.default.FORBIDDEN, err.message);
-    }
-});
-const searchableFields = ["title", "description", "director", "cast", "genre"];
-const getAllContent = (params) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const { searchTerm } = params, exactMatchFields = __rest(params, ["searchTerm"]);
-=======
         throw new apiError_1.default(http_status_1.default.FORBIDDEN, err.message);
     }
 });
@@ -67,26 +50,16 @@ const getAllContent = (params, options) => __awaiter(void 0, void 0, void 0, fun
     try {
         const { searchTerm } = params, exactMatchFields = __rest(params, ["searchTerm"]);
         const { page, limit, sortBy, sortOrder, skip } = (0, content_constans_1.calculatePagination)(options);
->>>>>>> 7d7c4759b342087cf4a68961a776024a2d4d5337
         const conditions = [];
         //*create search conditions for searchable fields
         if (searchTerm) {
             conditions.push({
-<<<<<<< HEAD
-                OR: searchableFields.map(field => ({
-                    [field]: {
-                        contains: searchTerm,
-                        mode: 'insensitive'
-                    }
-                }))
-=======
                 OR: content_constans_1.searchableFields.map((field) => ({
                     [field]: {
                         contains: searchTerm,
                         mode: 'insensitive',
                     },
                 })),
->>>>>>> 7d7c4759b342087cf4a68961a776024a2d4d5337
             });
         }
         //*create conditions for exact match fields
@@ -97,25 +70,6 @@ const getAllContent = (params, options) => __awaiter(void 0, void 0, void 0, fun
                         return { [key]: { in: value } };
                     }
                     return { [key]: { equals: value } };
-<<<<<<< HEAD
-                })
-            });
-        }
-        const whereConditions = conditions.length > 0
-            ? { AND: conditions }
-            : {};
-        return yield prisma.video.findMany({
-            where: whereConditions,
-            // Consider adding for better performance:
-            // take: 20, // Pagination limit
-            // orderBy: { createdAt: 'desc' } // Default sorting
-        });
-    }
-    catch (err) {
-        const error = err instanceof Error ? err : new Error('Database operation failed');
-        // More appropriate status code for database errors
-        throw new ApiError_1.default(http_status_1.default.INTERNAL_SERVER_ERROR, error.message);
-=======
                 }),
             });
         }
@@ -198,17 +152,12 @@ const deleteContent = (id) => __awaiter(void 0, void 0, void 0, function* () {
     }
     catch (err) {
         throw new apiError_1.default(http_status_1.default.FORBIDDEN, err.message);
->>>>>>> 7d7c4759b342087cf4a68961a776024a2d4d5337
     }
 });
 exports.contentService = {
     createContent,
-<<<<<<< HEAD
-    getAllContent
-=======
     getAllContent,
     updateContent,
     deleteContent,
     getContentById,
->>>>>>> 7d7c4759b342087cf4a68961a776024a2d4d5337
 };

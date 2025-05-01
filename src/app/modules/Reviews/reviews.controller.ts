@@ -45,7 +45,7 @@ const getSingleReview = catchAsync(async (req, res, next) => {
   sendResponse(res, {
     statuscode: httpStatus.OK,
     success: true,
-    message: 'Review delete successfully',
+    message: 'Review fetched successfully',
     data: result,
   });
 });
@@ -55,7 +55,7 @@ const getReview = catchAsync(async (req, res, next) => {
   sendResponse(res, {
     statuscode: httpStatus.OK,
     success: true,
-    message: 'Review delete successfully',
+    message: 'Review fetched successfully',
     data: result,
   });
 });

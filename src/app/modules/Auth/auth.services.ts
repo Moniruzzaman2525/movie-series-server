@@ -4,17 +4,11 @@ import { jwtHelpers } from '../../../helpers/jwtHelpers';
 import prisma from '../../../helpers/prisma';
 import bcrypt from 'bcrypt';
 import { sendEmail } from '../../../utils/sendEmail';
-
-import httpStatus from 'http-status';
 import ApiError from '../../errors/apiError';
-// import ApiError from '../../errors/ApiError';
 
-<<<<<<< HEAD
-import httpStatus from "http-status";
-import ApiError from "../../errors/ApiError"
 
-=======
->>>>>>> 7d7c4759b342087cf4a68961a776024a2d4d5337
+
+
 const loginUser = async (payload: any) => {
     const userData = await prisma.user.findFirstOrThrow({
         where: {
@@ -91,11 +85,7 @@ const resetPassword = async (token: string, payload: { id: string; password: str
 
     const isValidToken = jwtHelpers.verifyToken(token, config.jwt.reset_password_secret as Secret);
     if (!isValidToken) {
-<<<<<<< HEAD
         throw new ApiError(403, 'You are not authorization')
-=======
-        throw new ApiError(httpStatus.FORBIDDEN, 'You are not authorization');
->>>>>>> 7d7c4759b342087cf4a68961a776024a2d4d5337
     }
 
     const hashPassword: string = await bcrypt.hash(payload.password, 12);

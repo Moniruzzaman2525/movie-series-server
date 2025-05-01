@@ -1,6 +1,4 @@
 "use strict";
-<<<<<<< HEAD
-=======
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.updateContentSchema = void 0;
 const zod_1 = require("zod");
@@ -25,4 +23,3 @@ exports.updateContentSchema = zod_1.z.object({
         userId: zod_1.z.string().optional(),
     }),
 });
->>>>>>> 7d7c4759b342087cf4a68961a776024a2d4d5337

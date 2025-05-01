@@ -1,6 +1,4 @@
 "use strict";
-<<<<<<< HEAD
-=======
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -111,4 +109,3 @@ exports.CommentServices = {
     deleteComment,
     getSingleComment
 };
->>>>>>> 7d7c4759b342087cf4a68961a776024a2d4d5337

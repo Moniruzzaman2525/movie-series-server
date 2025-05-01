@@ -24,13 +24,8 @@ const loginUser = (0, catchAsync_1.default)((req, res, next) => __awaiter(void 0
     (0, sendResponse_1.default)(res, {
         statuscode: http_status_1.default.OK,
         success: true,
-<<<<<<< HEAD
-        message: "User login successfully",
-        data: { accessToken }
-=======
         message: 'User login successfully',
         data: { accessToken },
->>>>>>> 7d7c4759b342087cf4a68961a776024a2d4d5337
     });
 }));
 const forgetPassword = (0, catchAsync_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
@@ -38,40 +33,22 @@ const forgetPassword = (0, catchAsync_1.default)((req, res, next) => __awaiter(v
     (0, sendResponse_1.default)(res, {
         statuscode: http_status_1.default.OK,
         success: true,
-<<<<<<< HEAD
         message: "A password reset link has been sent to your email. Please check your inbox.",
         data: result
     });
 }));
 const resetPassword = (0, catchAsync_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const token = req.headers.authorization || "";
-=======
-        message: 'A password reset link has been sent to your email. Please check your inbox.',
-        data: result,
-    });
-}));
-const resetPassword = (0, catchAsync_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const token = req.headers.authorization || '';
->>>>>>> 7d7c4759b342087cf4a68961a776024a2d4d5337
     const result = yield auth_services_1.AuthServices.resetPassword(token, req.body);
     (0, sendResponse_1.default)(res, {
         statuscode: http_status_1.default.OK,
         success: true,
-<<<<<<< HEAD
-        message: "Password changes successfully.",
-        data: result
-=======
         message: 'Password changes successfully.',
         data: result,
->>>>>>> 7d7c4759b342087cf4a68961a776024a2d4d5337
     });
 }));
 exports.AuthController = {
     loginUser,
     forgetPassword,
-<<<<<<< HEAD
-    resetPassword
-=======
     resetPassword,
->>>>>>> 7d7c4759b342087cf4a68961a776024a2d4d5337
 };

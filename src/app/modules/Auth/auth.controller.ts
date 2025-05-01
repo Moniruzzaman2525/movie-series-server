@@ -21,7 +21,6 @@ const loginUser = catchAsync(async (req, res, next) => {
 const forgetPassword = catchAsync(async (req, res, next) => {
   const result = await AuthServices.forgetPassword(req.body);
 
-<<<<<<< HEAD
 
     sendResponse(res, {
         statuscode: httpStatus.OK,
@@ -30,15 +29,6 @@ const forgetPassword = catchAsync(async (req, res, next) => {
         data: result
     })
 })
-=======
-  sendResponse(res, {
-    statuscode: httpStatus.OK,
-    success: true,
-    message: 'A password reset link has been sent to your email. Please check your inbox.',
-    data: result,
-  });
-});
->>>>>>> 7d7c4759b342087cf4a68961a776024a2d4d5337
 
 const resetPassword = catchAsync(async (req, res, next) => {
   const token = req.headers.authorization || '';

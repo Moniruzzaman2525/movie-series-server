@@ -17,29 +17,11 @@ const http_status_1 = __importDefault(require("http-status"));
 const catchAsync_1 = __importDefault(require("../../../shared/catchAsync"));
 const sendResponse_1 = __importDefault(require("../../../shared/sendResponse"));
 const content_service_1 = require("./content.service");
-<<<<<<< HEAD
-=======
 const content_constans_1 = require("./content.constans");
->>>>>>> 7d7c4759b342087cf4a68961a776024a2d4d5337
 const createContent = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield content_service_1.contentService.createContent(req);
     (0, sendResponse_1.default)(res, {
         success: true,
-<<<<<<< HEAD
-        message: "Content created successfully",
-        data: result,
-        statuscode: http_status_1.default.CREATED
-    });
-}));
-const getAllContent = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const params = req.query;
-    const result = yield content_service_1.contentService.getAllContent(params);
-    (0, sendResponse_1.default)(res, {
-        success: true,
-        message: "Content fetched successfully",
-        data: result,
-        statuscode: http_status_1.default.OK
-=======
         message: 'Content created successfully',
         data: result,
         statuscode: http_status_1.default.CREATED,
@@ -84,17 +66,12 @@ const getSingleContent = (0, catchAsync_1.default)((req, res) => __awaiter(void 
         message: 'Content fetched successfully',
         data: result,
         statuscode: http_status_1.default.OK,
->>>>>>> 7d7c4759b342087cf4a68961a776024a2d4d5337
     });
 }));
 exports.contentController = {
     createContent,
-<<<<<<< HEAD
-    getAllContent
-=======
     getAllContent,
     updateContent,
     deleteContent,
     getSingleContent,
->>>>>>> 7d7c4759b342087cf4a68961a776024a2d4d5337
 };

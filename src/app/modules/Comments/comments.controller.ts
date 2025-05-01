@@ -10,7 +10,7 @@ const addComments = catchAsync(async (req, res, next) => {
     sendResponse(res, {
         statuscode: httpStatus.CREATED,
         success: true,
-        message: 'Review add successfully',
+        message: 'Comment add successfully',
         data: result,
     });
 });
@@ -20,7 +20,7 @@ const getAllComment = catchAsync(async (req, res, next) => {
     sendResponse(res, {
         statuscode: httpStatus.OK,
         success: true,
-        message: 'Comment fetch successfully',
+        message: 'Comment fetched successfully',
         data: result,
     });
 });
@@ -32,7 +32,7 @@ const editComment = catchAsync(async (req, res, next) => {
     sendResponse(res, {
         statuscode: httpStatus.OK,
         success: true,
-        message: 'Review edit successfully',
+        message: 'Comment edit successfully',
         data: result,
     });
 });

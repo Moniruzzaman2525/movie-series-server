@@ -12,48 +12,11 @@ const likes_routes_1 = require("../modules/Likes/likes.routes");
 const purchases_routes_1 = require("../modules/Purchases/purchases.routes");
 const reviews_routes_1 = require("../modules/Reviews/reviews.routes");
 const watchList_routes_1 = require("../modules/WatchList/watchList.routes");
-<<<<<<< HEAD
-=======
 const admin_routes_1 = require("../modules/Admin/admin.routes");
->>>>>>> 7d7c4759b342087cf4a68961a776024a2d4d5337
 const router = express_1.default.Router();
 const modulesRoute = [
     {
         path: '/user',
-<<<<<<< HEAD
-        route: user_routes_1.UserRoutes
-    },
-    {
-        path: '/auth',
-        route: auth_routes_1.AuthRouters
-    },
-    {
-        path: "/content",
-        route: content_routes_1.ContentRouter
-    },
-    {
-        path: "/comments",
-        route: comments_rotes_1.CommentsRoutes
-    },
-    {
-        path: "/likes",
-        route: likes_routes_1.LikesRoutes
-    },
-    {
-        path: "/purchases",
-        route: purchases_routes_1.PurchasesRoutes
-    },
-    {
-        path: "/reviews",
-        route: reviews_routes_1.ReviewRoutes
-    },
-    {
-        path: "/watch-list",
-        route: watchList_routes_1.WatchListRoutes
-    },
-];
-modulesRoute.forEach(route => {
-=======
         route: user_routes_1.UserRoutes,
     },
     {
@@ -90,7 +53,6 @@ modulesRoute.forEach(route => {
     },
 ];
 modulesRoute.forEach((route) => {
->>>>>>> 7d7c4759b342087cf4a68961a776024a2d4d5337
     router.use(route.path, route.route);
 });
 exports.default = router;

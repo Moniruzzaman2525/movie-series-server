@@ -9,15 +9,9 @@ const auth_1 = require("../../middlewares/auth");
 const client_1 = require("@prisma/client");
 const reviews_controller_1 = require("./reviews.controller");
 const router = express_1.default.Router();
-<<<<<<< HEAD
-router.post('/', (0, auth_1.auth)(client_1.UserRole.USER), reviews_controller_1.ReviewController.addReview);
-router.patch('/edit-review/:id', (0, auth_1.auth)(client_1.UserRole.USER), reviews_controller_1.ReviewController.editReview);
-router.delete('/delete-review/:id', (0, auth_1.auth)(client_1.UserRole.USER), reviews_controller_1.ReviewController.deleteReview);
-=======
 router.get('/', (0, auth_1.auth)(client_1.UserRole.USER, client_1.UserRole.ADMIN), reviews_controller_1.ReviewController.getReview);
 router.post('/', (0, auth_1.auth)(client_1.UserRole.USER), reviews_controller_1.ReviewController.addReview);
 router.patch('/edit-review/:id', (0, auth_1.auth)(client_1.UserRole.USER), reviews_controller_1.ReviewController.editReview);
 router.delete('/delete-review/:id', (0, auth_1.auth)(client_1.UserRole.USER), reviews_controller_1.ReviewController.deleteReview);
 router.get('/:id', (0, auth_1.auth)(client_1.UserRole.USER), reviews_controller_1.ReviewController.getSingleReview);
->>>>>>> 7d7c4759b342087cf4a68961a776024a2d4d5337
 exports.ReviewRoutes = router;
