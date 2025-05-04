@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.pick = exports.calculatePagination = exports.searchableFields = void 0;
-exports.searchableFields = ['title', 'description', 'director', 'cast', 'genre'];
+exports.searchableFields = ['title', 'description', 'director', 'cast', 'genre', 'category'];
 const calculatePagination = (options) => {
     const page = Number(options.page) || 1;
     const limit = Number(options.limit) || 10;

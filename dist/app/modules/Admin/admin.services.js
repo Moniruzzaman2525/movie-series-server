@@ -78,9 +78,15 @@ const getAverageRating = (videoId) => __awaiter(void 0, void 0, void 0, function
             id: videoId
         }
     });
+<<<<<<< HEAD
     const result = yield prisma_1.default.video.aggregate({
         where: {
             id: videoId
+=======
+    const result = yield prisma_1.default.review.aggregate({
+        where: {
+            videoId: videoId
+>>>>>>> bc18c1ac3ff382e4adb0b37489644dd86272fcbb
         },
         _avg: {
             rating: true

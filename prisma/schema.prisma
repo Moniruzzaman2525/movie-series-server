@@ -23,6 +23,7 @@ model User {
   Comment   Comment[]
   WatchList WatchList[]
   Purchase  Purchase[]
+  Payment   Payment[]
 
   @@map("user")
 }
@@ -39,21 +40,20 @@ model Video {
   cast              String
   streamingPlatform String
   description       String
-  like              Int         @default(0)
+  like              Int?        @default(0)
   price             Float
-  rating            Float
-  dislike           Int         @default(0)
+  dislike           Int?        @default(0)
   createdAt         DateTime    @default(now())
   updatedAt         DateTime    @updatedAt
-
-  userId String
-  user   User   @relation(fields: [userId], references: [id])
-
-  review    Review[]
-  watchList WatchList[]
-  purchase  Purchase[]
-  comment   Comment[]
-  Like      Like[]
+  userId            String
+  user              User        @relation(fields: [userId], references: [id])
+  review            Review[]
+  watchList         WatchList[]
+  purchase          Purchase[]
+  Comment           Comment[]
+  Like              Like[]
+  VideoTag          VideoTag[]
+  Payment           Payment[]
 
   @@map("video")
 }
@@ -64,18 +64,22 @@ model Like {
   userId String
   user   User   @relation(fields: [userId], references: [id])
 
-  videoId String
-  video   Video  @relation(fields: [videoId], references: [id])
+  videoId String?
+  video   Video?  @relation(fields: [videoId], references: [id])
+
+  reviewId String?
+  review   Review? @relation(fields: [reviewId], references: [id])
 
   createdAt DateTime @default(now())
 
+  @@unique([userId, videoId])
+  @@unique([userId, reviewId])
   @@map("likes")
 }
 
 model Review {
   id     String @id @default(uuid())
   rating Int
-
   userId String
   user   User   @relation(fields: [userId], references: [id])
 
@@ -85,28 +89,57 @@ model Review {
   content   String
   createdAt DateTime @default(now())
 
-   status ReviewStatus @default(PENDING)
+  like       Int?    @default(0)
+  hasSpoiler Boolean @default(false)
+
+  status  ReviewStatus @default(PENDING)
+  Comment Comment[]
+  Like    Like[]
 
   @@map("reviews")
 }
 
-model Comment {
-  id String @id @default(uuid())
+model Payment {
+  id            String   @id @default(uuid())
+  tran_id       String   @unique
+  total_amount  Float
+  cus_name      String
+  cus_email     String
+  cus_phone     String
+  cus_add1      String
+  paymentStatus Boolean  @default(false)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  userId        String
+  contentId     String
+  user          User     @relation(fields: [userId], references: [id])
+  video         Video    @relation(fields: [contentId], references: [id])
 
+  @@map("payments")
+}
+
+model Comment {
+  id     String @id @default(uuid())
   userId String
   user   User   @relation(fields: [userId], references: [id])
 
-  videoId String
-  video   Video  @relation(fields: [videoId], references: [id])
+  videoId String?
+  video   Video?  @relation(fields: [videoId], references: [id])
 
-  status CommentStatus @default(PENDING)
+  status    CommentStatus @default(PENDING)
+  content   String
+  createdAt DateTime      @default(now())
 
-  content  String
-  createAt DateTime @default(now())
+  reviewId String?
+  review   Review? @relation(fields: [reviewId], references: [id])
+
+  parentCommentId String?
+  parentComment   Comment? @relation("CommentReplies", fields: [parentCommentId], references: [id])
+
+  replies Comment[] @relation("CommentReplies")
 
   @@map("comments")
 }
-
 
 model WatchList {
   id String @id @default(uuid())
@@ -139,17 +172,36 @@ model Purchase {
   @@map("purchases")
 }
 
+model Tag {
+  id        String     @id @default(uuid())
+  name      String     @unique
+  videoTags VideoTag[] // Change to videoTags instead of reviewTags
+
+  @@map("tags")
+}
+
+model VideoTag {
+  videoId String
+  tagId   String
+
+  video Video @relation(fields: [videoId], references: [id])
+  tag   Tag   @relation(fields: [tagId], references: [id])
+
+  @@id([videoId, tagId])
+  @@map("video_tags")
+}
+
 enum ReviewStatus {
   PENDING
   APPROVED
   REJECTED
 }
+
 enum CommentStatus {
   PENDING
   APPROVED
   REJECTED
 }
-
 
 enum Category {
   MOVIE

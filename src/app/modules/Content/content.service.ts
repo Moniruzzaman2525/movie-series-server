@@ -16,6 +16,8 @@ const createContent = async (req: any) => {
       const uploadImage = await uploadToCloudinary(file);
       req.body.thumbnailImage = uploadImage.secure_url;
     }
+
+    console.log(req.body)
     const content = await prisma.video.create({
       data: {
         ...req.body,
@@ -66,7 +68,7 @@ const getAllContent = async (params: SearchParams, options: TPaginationOptions) 
       take: limit,
       orderBy: { [sortBy || 'createdAt']: sortOrder || 'desc' },
       include: {
-        comment: {
+        Comment: {
           where: {
             status: {
               in: ['APPROVED']
@@ -78,6 +80,11 @@ const getAllContent = async (params: SearchParams, options: TPaginationOptions) 
             status: {
               in: ['APPROVED']
             }
+          }
+        },
+        VideoTag: {
+          select: {
+            tag: true
           }
         }
       }
@@ -135,7 +142,7 @@ const getContentById = async (id: string) => {
     const content = await prisma.video.findUnique({
       where: { id },
       include: {
-        comment: {
+        Comment: {
           where: {
             status: {
               in: ['APPROVED']
@@ -147,6 +154,11 @@ const getContentById = async (id: string) => {
             status: {
               in: ['APPROVED']
             }
+          }
+        },
+        VideoTag: {
+          select: {
+            tag: true
           }
         }
       }
@@ -174,10 +186,32 @@ const deleteContent = async (id: string) => {
   }
 };
 
+const contentGetCategory = async () => {
+  try {
+    const content = await prisma.video.findMany({
+      where: {
+        category: {
+          equals: "SERIES",
+          // mode:"insensitive"
+        }
+      }
+    });
+
+    return content;
+  } catch (err) {
+    console.log(err);
+    throw new ApiError(
+      httpStatus.INTERNAL_SERVER_ERROR,
+      'Failed to fetch videos by category'
+    );
+  }
+};
+
 export const contentService = {
   createContent,
   getAllContent,
   updateContent,
   deleteContent,
   getContentById,
+  contentGetCategory,
 };

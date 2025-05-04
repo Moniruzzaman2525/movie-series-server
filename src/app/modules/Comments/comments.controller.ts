@@ -6,7 +6,7 @@ import { CommentServices } from './comments.services';
 
 const addComments = catchAsync(async (req, res, next) => {
     const user = req.user;
-    const result = await CommentServices.addComments(user as IAuthUser, req.body);
+    const result = await CommentServices.addComment(user as IAuthUser, req.body);
     sendResponse(res, {
         statuscode: httpStatus.CREATED,
         success: true,

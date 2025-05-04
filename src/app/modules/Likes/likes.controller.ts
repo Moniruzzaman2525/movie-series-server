@@ -25,9 +25,32 @@ const unlikeVideo = catchAsync(async (req, res, next) => {
         data: result,
     });
 });
+const likeReview = catchAsync(async (req, res, next) => {
+    const user = req.user;
+    const result = await LikeServices.likeReview(user as IAuthUser, req.body);
+    sendResponse(res, {
+        statuscode: httpStatus.CREATED,
+        success: true,
+        message: 'Review like successfully',
+        data: result,
+    });
+});
+
+const unlikeReview = catchAsync(async (req, res, next) => {
+    const user = req.user;
+    const result = await LikeServices.unlikeReview(user as IAuthUser, req.body);
+    sendResponse(res, {
+        statuscode: httpStatus.CREATED,
+        success: true,
+        message: 'Review unlike successfully',
+        data: result,
+    });
+});
 
 
 export const LikeController = {
     likeVideo,
-    unlikeVideo
+    unlikeVideo,
+    likeReview,
+    unlikeReview
 };

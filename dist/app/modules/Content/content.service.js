@@ -38,6 +38,7 @@ const createContent = (req) => __awaiter(void 0, void 0, void 0, function* () {
             const uploadImage = yield (0, utils_1.uploadToCloudinary)(file);
             req.body.thumbnailImage = uploadImage.secure_url;
         }
+        console.log(req.body);
         const content = yield prisma.video.create({
             data: Object.assign(Object.assign({}, req.body), { userId: user.id }),
         });
@@ -81,7 +82,11 @@ const getAllContent = (params, options) => __awaiter(void 0, void 0, void 0, fun
             take: limit,
             orderBy: { [sortBy || 'createdAt']: sortOrder || 'desc' },
             include: {
+<<<<<<< HEAD
                 comment: {
+=======
+                Comment: {
+>>>>>>> bc18c1ac3ff382e4adb0b37489644dd86272fcbb
                     where: {
                         status: {
                             in: ['APPROVED']
@@ -94,6 +99,14 @@ const getAllContent = (params, options) => __awaiter(void 0, void 0, void 0, fun
                             in: ['APPROVED']
                         }
                     }
+<<<<<<< HEAD
+=======
+                },
+                VideoTag: {
+                    select: {
+                        tag: true
+                    }
+>>>>>>> bc18c1ac3ff382e4adb0b37489644dd86272fcbb
                 }
             }
         });
@@ -148,7 +161,11 @@ const getContentById = (id) => __awaiter(void 0, void 0, void 0, function* () {
         const content = yield prisma.video.findUnique({
             where: { id },
             include: {
+<<<<<<< HEAD
                 comment: {
+=======
+                Comment: {
+>>>>>>> bc18c1ac3ff382e4adb0b37489644dd86272fcbb
                     where: {
                         status: {
                             in: ['APPROVED']
@@ -161,6 +178,14 @@ const getContentById = (id) => __awaiter(void 0, void 0, void 0, function* () {
                             in: ['APPROVED']
                         }
                     }
+<<<<<<< HEAD
+=======
+                },
+                VideoTag: {
+                    select: {
+                        tag: true
+                    }
+>>>>>>> bc18c1ac3ff382e4adb0b37489644dd86272fcbb
                 }
             }
         });
@@ -187,10 +212,28 @@ const deleteContent = (id) => __awaiter(void 0, void 0, void 0, function* () {
         throw new apiError_1.default(http_status_1.default.FORBIDDEN, err.message);
     }
 });
+const contentGetCategory = () => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const content = yield prisma.video.findMany({
+            where: {
+                category: {
+                    equals: "SERIES",
+                    // mode:"insensitive"
+                }
+            }
+        });
+        return content;
+    }
+    catch (err) {
+        console.log(err);
+        throw new apiError_1.default(http_status_1.default.INTERNAL_SERVER_ERROR, 'Failed to fetch videos by category');
+    }
+});
 exports.contentService = {
     createContent,
     getAllContent,
     updateContent,
     deleteContent,
     getContentById,
+    contentGetCategory,
 };

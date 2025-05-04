@@ -103,6 +103,10 @@ const getSingleReview = async (reviewId: string) => {
     where: {
       id: reviewId,
     },
+    include: {
+      user: true,
+      video: true,
+    }
   });
 
   return result;

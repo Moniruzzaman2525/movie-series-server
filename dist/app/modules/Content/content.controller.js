@@ -28,7 +28,7 @@ const createContent = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, 
     });
 }));
 const getAllContent = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const filters = (0, content_constans_1.pick)(req.query, ['searchTerm', 'name', 'email']);
+    const filters = (0, content_constans_1.pick)(req.query, ['searchTerm', 'name', 'email', 'category', 'genre']);
     const options = (0, content_constans_1.pick)(req.query, ['page', 'limit', 'sortBy', 'sortOrder']);
     const result = yield content_service_1.contentService.getAllContent(filters, options);
     (0, sendResponse_1.default)(res, {
@@ -68,10 +68,23 @@ const getSingleContent = (0, catchAsync_1.default)((req, res) => __awaiter(void 
         statuscode: http_status_1.default.OK,
     });
 }));
+const contentByCategory = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log(req);
+    // const { id } = req.params;
+    const result = yield content_service_1.contentService.contentGetCategory();
+    console.log(result);
+    (0, sendResponse_1.default)(res, {
+        success: true,
+        message: 'Content fetched successfully',
+        data: result,
+        statuscode: http_status_1.default.OK,
+    });
+}));
 exports.contentController = {
     createContent,
     getAllContent,
     updateContent,
     deleteContent,
     getSingleContent,
+    contentByCategory,
 };

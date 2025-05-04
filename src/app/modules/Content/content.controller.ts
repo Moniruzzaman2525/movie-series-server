@@ -15,7 +15,7 @@ const createContent = catchAsync(async (req, res) => {
 });
 
 const getAllContent = catchAsync(async (req, res) => {
-  const filters = pick(req.query, ['searchTerm', 'name', 'email']);
+  const filters = pick(req.query, ['searchTerm', 'name', 'email','category', 'genre']);
   const options = pick(req.query, ['page', 'limit', 'sortBy', 'sortOrder']);
   const result = await contentService.getAllContent(filters, options);
   sendResponse(res, {
@@ -58,10 +58,24 @@ const getSingleContent = catchAsync(async (req, res) => {
     statuscode: httpStatus.OK,
   });
 });
+
+const contentByCategory = catchAsync(async (req, res) => {
+  console.log(req);
+  // const { id } = req.params;
+  const result = await contentService.contentGetCategory();
+  console.log(result);
+  sendResponse(res, {
+    success: true,
+    message: 'Content fetched successfully',
+    data: result,
+    statuscode: httpStatus.OK,
+  });
+});
 export const contentController = {
   createContent,
   getAllContent,
   updateContent,
   deleteContent,
   getSingleContent,
+  contentByCategory,
 };

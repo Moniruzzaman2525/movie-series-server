@@ -19,7 +19,7 @@ const catchAsync_1 = __importDefault(require("../../../shared/catchAsync"));
 const comments_services_1 = require("./comments.services");
 const addComments = (0, catchAsync_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const user = req.user;
-    const result = yield comments_services_1.CommentServices.addComments(user, req.body);
+    const result = yield comments_services_1.CommentServices.addComment(user, req.body);
     (0, sendResponse_1.default)(res, {
         statuscode: http_status_1.default.CREATED,
         success: true,

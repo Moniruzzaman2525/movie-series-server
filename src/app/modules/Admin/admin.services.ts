@@ -9,6 +9,7 @@ const approveOrUnpublishReview = async (reviewId: string, payload: { status: Rev
         }
     })
 
+    console.log(payload)
     const result = await prisma.review.update({
         where: {
             id: reviewId
@@ -79,19 +80,20 @@ const getAverageRating = async (videoId: string) => {
         where: {
             id: videoId
         }
-    })
+    });
 
-    const result = await prisma.video.aggregate({
+    const result = await prisma.review.aggregate({
         where: {
-            id: videoId
+            videoId: videoId
         },
         _avg: {
             rating: true
         }
-    })
+    });
 
-    return result
-}
+    return result;
+};
+
 const getMostReviewedTitle = async () => {
     const result = await prisma.video.findMany({
         orderBy: {
@@ -105,7 +107,7 @@ const getMostReviewedTitle = async () => {
             title: true,
             _count: {
                 select: {
-                    review: true 
+                    review: true
                 }
             }
         }
@@ -114,6 +116,48 @@ const getMostReviewedTitle = async () => {
     return result;
 };
 
+const getAllUser = async () => {
+    const result = await prisma.user.findMany({
+        where: {
+            isDeleted: false
+        },
+        select: {
+            id: true,
+            name: true,
+            email: true,
+            createAt: true,
+            role: true,
+            updateAt: true,
+        },
+
+    });
+
+    return result
+}
+const removeUser = async (userId: string) => {
+
+    const result = await prisma.user.update({
+        where: {
+            id: userId
+        },
+        data: {
+            isDeleted: true
+        }
+    })
+
+    return result
+}
+
+const getAllUserReview = async (userId: string) => {
+
+    const result = await prisma.review.findMany({
+        include: {
+            user: true
+        }
+    })
+
+    return result
+}
 
 export const AdminServices = {
     approveOrUnpublishReview,
@@ -121,5 +165,8 @@ export const AdminServices = {
     removeInappropriateReview,
     removeInappropriateComment,
     getAverageRating,
-    getMostReviewedTitle
+    getMostReviewedTitle,
+    getAllUser,
+    removeUser,
+    getAllUserReview
 }

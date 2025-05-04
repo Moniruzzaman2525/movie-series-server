@@ -5,6 +5,7 @@ dotenv.config({ path: path.join(process.cwd() + '.env') });
 
 export default {
   port: process.env.PORT,
+  base_url: process.env.BASE_URL,
   jwt: {
     jwt_secret: process.env.JWT_SECRET,
     expires_in: process.env.EXPIRES_IN,
@@ -23,4 +24,8 @@ export default {
     email: process.env.EMAIL,
     app_pass: process.env.APP_PASS,
   },
+  payment:{
+    store_id: process.env.SSLCOMMERZ_STORE_ID,
+    store_passwd: process.env.SSLCOMMERZ_STORE_PASSWORD,
+  }
 };

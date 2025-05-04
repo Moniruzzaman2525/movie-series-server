@@ -1,4 +1,4 @@
-export const searchableFields = ['title', 'description', 'director', 'cast', 'genre'];
+export const searchableFields = ['title', 'description', 'director', 'cast', 'genre','category'];
 
 export const calculatePagination = (options: {
   page?: number;

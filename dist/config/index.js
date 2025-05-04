@@ -8,6 +8,7 @@ const path_1 = __importDefault(require("path"));
 dotenv_1.default.config({ path: path_1.default.join(process.cwd() + '.env') });
 exports.default = {
     port: process.env.PORT,
+    base_url: process.env.BASE_URL,
     jwt: {
         jwt_secret: process.env.JWT_SECRET,
         expires_in: process.env.EXPIRES_IN,
@@ -26,4 +27,8 @@ exports.default = {
         email: process.env.EMAIL,
         app_pass: process.env.APP_PASS,
     },
+    payment: {
+        store_id: process.env.SSLCOMMERZ_STORE_ID,
+        store_passwd: process.env.SSLCOMMERZ_STORE_PASSWORD,
+    }
 };

@@ -13,6 +13,7 @@ const loginUser = async (payload: any) => {
     const userData = await prisma.user.findFirstOrThrow({
         where: {
             email: payload.email,
+            isDeleted: false
         },
     });
 

@@ -17,7 +17,7 @@ const prisma_1 = __importDefault(require("../../../helpers/prisma"));
 const apiError_1 = __importDefault(require("../../errors/apiError"));
 const http_status_1 = __importDefault(require("http-status"));
 const client_1 = require("@prisma/client");
-const addComments = (user, payload) => __awaiter(void 0, void 0, void 0, function* () {
+const addComment = (user, payload) => __awaiter(void 0, void 0, void 0, function* () {
     if (!user) {
         throw new apiError_1.default(http_status_1.default.UNAUTHORIZED, "User is not authenticated or doesn't exist");
     }
@@ -27,13 +27,46 @@ const addComments = (user, payload) => __awaiter(void 0, void 0, void 0, functio
             isDeleted: false,
         },
     });
-    yield prisma_1.default.video.findFirstOrThrow({
+    let target = null;
+    if (payload.videoId) {
+        target = 'video';
+        yield prisma_1.default.video.findFirstOrThrow({
+            where: {
+                id: payload.videoId,
+            },
+        });
+    }
+    if (payload.reviewId) {
+        target = 'review';
+        yield prisma_1.default.review.findFirstOrThrow({
+            where: {
+                id: payload.reviewId,
+                status: client_1.ReviewStatus.APPROVED
+            },
+        });
+    }
+    if (!target) {
+        throw new apiError_1.default(http_status_1.default.BAD_REQUEST, "Either videoId or reviewId must be provided.");
+    }
+    if (!payload.parentCommentId) {
+        const result = yield prisma_1.default.comment.create({
+            data: Object.assign(Object.assign({}, payload), { userId: userData.id, [target + "Id"]: payload[`${target}Id`] }),
+        });
+        return result;
+    }
+    const parentComment = yield prisma_1.default.comment.findUnique({
         where: {
-            id: payload.videoId,
+            id: payload.parentCommentId,
         },
     });
+    if (!parentComment) {
+        throw new apiError_1.default(http_status_1.default.BAD_REQUEST, "Parent comment not found.");
+    }
+    if (parentComment.videoId !== payload.videoId && parentComment.reviewId !== payload.reviewId) {
+        throw new apiError_1.default(http_status_1.default.BAD_REQUEST, "Parent comment does not belong to the specified video or review.");
+    }
     const result = yield prisma_1.default.comment.create({
-        data: Object.assign(Object.assign({}, payload), { userId: userData.id }),
+        data: Object.assign(Object.assign({}, payload), { userId: userData.id, [target + "Id"]: payload[`${target}Id`] }),
     });
     return result;
 });
@@ -103,7 +136,7 @@ const getSingleComment = (commentId) => __awaiter(void 0, void 0, void 0, functi
     return result;
 });
 exports.CommentServices = {
-    addComments,
+    addComment,
     getAllComment,
     editComment,
     deleteComment,

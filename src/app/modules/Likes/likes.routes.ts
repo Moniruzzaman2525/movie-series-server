@@ -6,8 +6,11 @@ import { UserRole } from '@prisma/client';
 const router = express.Router();
 
 
-router.post('/like', auth(UserRole.USER, UserRole.ADMIN), LikeController.likeVideo);
-router.post('/un-like', auth(UserRole.USER, UserRole.ADMIN), LikeController.unlikeVideo);
+router.post('/video/like', auth(UserRole.USER, UserRole.ADMIN), LikeController.likeVideo);
+router.post('/video/un-like', auth(UserRole.USER, UserRole.ADMIN), LikeController.unlikeVideo);
+
+router.post('/review/like', auth(UserRole.USER, UserRole.ADMIN), LikeController.likeReview);
+router.post('/review/un-like', auth(UserRole.USER, UserRole.ADMIN), LikeController.unlikeReview);
 
 
 export const LikesRoutes = router;

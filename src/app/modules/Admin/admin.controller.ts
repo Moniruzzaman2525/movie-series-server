@@ -6,6 +6,7 @@ import { AdminServices } from './admin.services';
 const approveOrUnpublishReview = catchAsync(async (req, res, next) => {
 
     const reviewId = req.params.id
+
     const result = await AdminServices.approveOrUnpublishReview(reviewId, req.body);
 
     sendResponse(res, {
@@ -67,6 +68,17 @@ const getAverageRating = catchAsync(async (req, res, next) => {
         data: result
     });
 });
+const getAllUser = catchAsync(async (req, res, next) => {
+
+    const result = await AdminServices.getAllUser();
+
+    sendResponse(res, {
+        statuscode: httpStatus.OK,
+        success: true,
+        message: 'All user has been successfully fetched.',
+        data: result
+    });
+});
 
 const getMostReviewedTitle = catchAsync(async (req, res, next) => {
 
@@ -80,6 +92,33 @@ const getMostReviewedTitle = catchAsync(async (req, res, next) => {
     });
 });
 
+const removeUser = catchAsync(async (req, res, next) => {
+
+    const userId = req.params.id
+
+    const result = await AdminServices.removeUser(userId);
+
+    sendResponse(res, {
+        statuscode: httpStatus.OK,
+        success: true,
+        message: 'User has been successfully deleted.',
+        data: result
+    });
+});
+const getAllUserReview = catchAsync(async (req, res, next) => {
+
+    const userId = req.params.id
+
+    const result = await AdminServices.getAllUserReview(userId);
+
+    sendResponse(res, {
+        statuscode: httpStatus.OK,
+        success: true,
+        message: 'User has been successfully deleted.',
+        data: result
+    });
+});
+
 
 export const AdminController = {
     approveOrUnpublishReview,
@@ -87,5 +126,8 @@ export const AdminController = {
     removeInappropriateReview,
     removeInappropriateComment,
     getAverageRating,
-    getMostReviewedTitle
+    getMostReviewedTitle,
+    getAllUser,
+    removeUser,
+    getAllUserReview
 };
