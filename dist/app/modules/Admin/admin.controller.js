@@ -12,17 +12,75 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.AuthController = void 0;
+exports.AdminController = void 0;
 const catchAsync_1 = __importDefault(require("../../../shared/catchAsync"));
-const loginUser = (0, catchAsync_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    // const result = await AdminServices.loginUser(req.body);
-    // const { refreshToken, accessToken } = result;
-    // res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: true });
-    // sendResponse(res, {
-    //     statuscode: httpStatus.OK,
-    //     success: true,
-    //     message: 'User login successfully',
-    //     data: { accessToken },
-    // });
+const sendResponse_1 = __importDefault(require("../../../shared/sendResponse"));
+const http_status_1 = __importDefault(require("http-status"));
+const admin_services_1 = require("./admin.services");
+const approveOrUnpublishReview = (0, catchAsync_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const reviewId = req.params.id;
+    const result = yield admin_services_1.AdminServices.approveOrUnpublishReview(reviewId, req.body);
+    (0, sendResponse_1.default)(res, {
+        statuscode: http_status_1.default.OK,
+        success: true,
+        message: 'Review status has been successfully updated.',
+        data: result
+    });
 }));
-exports.AuthController = {};
+const approveOrUnpublishComment = (0, catchAsync_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const commentId = req.params.id;
+    const result = yield admin_services_1.AdminServices.approveOrUnpublishComment(commentId, req.body);
+    (0, sendResponse_1.default)(res, {
+        statuscode: http_status_1.default.OK,
+        success: true,
+        message: 'Comment status has been successfully updated.',
+        data: result
+    });
+}));
+const removeInappropriateReview = (0, catchAsync_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const reviewId = req.params.id;
+    const result = yield admin_services_1.AdminServices.removeInappropriateReview(reviewId);
+    (0, sendResponse_1.default)(res, {
+        statuscode: http_status_1.default.OK,
+        success: true,
+        message: 'Review has been successfully deleted.',
+        data: result
+    });
+}));
+const removeInappropriateComment = (0, catchAsync_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const commentId = req.params.id;
+    const result = yield admin_services_1.AdminServices.removeInappropriateComment(commentId);
+    (0, sendResponse_1.default)(res, {
+        statuscode: http_status_1.default.OK,
+        success: true,
+        message: 'Comment has been successfully deleted.',
+        data: result
+    });
+}));
+const getAverageRating = (0, catchAsync_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const videoId = req.params.id;
+    const result = yield admin_services_1.AdminServices.getAverageRating(videoId);
+    (0, sendResponse_1.default)(res, {
+        statuscode: http_status_1.default.OK,
+        success: true,
+        message: 'Average rating has been successfully fetched.',
+        data: result
+    });
+}));
+const getMostReviewedTitle = (0, catchAsync_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield admin_services_1.AdminServices.getMostReviewedTitle();
+    (0, sendResponse_1.default)(res, {
+        statuscode: http_status_1.default.OK,
+        success: true,
+        message: 'Most reviewed title has been successfully fetched.',
+        data: result
+    });
+}));
+exports.AdminController = {
+    approveOrUnpublishReview,
+    approveOrUnpublishComment,
+    removeInappropriateReview,
+    removeInappropriateComment,
+    getAverageRating,
+    getMostReviewedTitle
+};

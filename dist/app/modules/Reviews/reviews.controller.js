@@ -55,7 +55,7 @@ const getSingleReview = (0, catchAsync_1.default)((req, res, next) => __awaiter(
     (0, sendResponse_1.default)(res, {
         statuscode: http_status_1.default.OK,
         success: true,
-        message: 'Review delete successfully',
+        message: 'Review fetched successfully',
         data: result,
     });
 }));
@@ -64,7 +64,7 @@ const getReview = (0, catchAsync_1.default)((req, res, next) => __awaiter(void 0
     (0, sendResponse_1.default)(res, {
         statuscode: http_status_1.default.OK,
         success: true,
-        message: 'Review delete successfully',
+        message: 'Review fetched successfully',
         data: result,
     });
 }));

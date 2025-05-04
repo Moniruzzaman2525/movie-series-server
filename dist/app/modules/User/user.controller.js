@@ -22,7 +22,7 @@ const createUser = (0, catchAsync_1.default)((req, res, next) => __awaiter(void 
     (0, sendResponse_1.default)(res, {
         statuscode: http_status_1.default.CREATED,
         success: true,
-        message: 'User create successfully',
+        message: 'User created successfully',
         data: result,
     });
 }));

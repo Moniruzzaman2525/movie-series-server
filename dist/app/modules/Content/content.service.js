@@ -33,12 +33,13 @@ const prisma = new client_1.PrismaClient();
 const createContent = (req) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const file = req.file;
+        const user = req.user;
         if (file) {
             const uploadImage = yield (0, utils_1.uploadToCloudinary)(file);
             req.body.thumbnailImage = uploadImage.secure_url;
         }
         const content = yield prisma.video.create({
-            data: req.body,
+            data: Object.assign(Object.assign({}, req.body), { userId: user.id }),
         });
         return content;
     }
@@ -79,6 +80,22 @@ const getAllContent = (params, options) => __awaiter(void 0, void 0, void 0, fun
             skip,
             take: limit,
             orderBy: { [sortBy || 'createdAt']: sortOrder || 'desc' },
+            include: {
+                comment: {
+                    where: {
+                        status: {
+                            in: ['APPROVED']
+                        }
+                    }
+                },
+                review: {
+                    where: {
+                        status: {
+                            in: ['APPROVED']
+                        }
+                    }
+                }
+            }
         });
         return {
             meta: {
@@ -130,6 +147,22 @@ const getContentById = (id) => __awaiter(void 0, void 0, void 0, function* () {
         }
         const content = yield prisma.video.findUnique({
             where: { id },
+            include: {
+                comment: {
+                    where: {
+                        status: {
+                            in: ['APPROVED']
+                        }
+                    }
+                },
+                review: {
+                    where: {
+                        status: {
+                            in: ['APPROVED']
+                        }
+                    }
+                }
+            }
         });
         return content;
     }

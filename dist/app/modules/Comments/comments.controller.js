@@ -23,7 +23,7 @@ const addComments = (0, catchAsync_1.default)((req, res, next) => __awaiter(void
     (0, sendResponse_1.default)(res, {
         statuscode: http_status_1.default.CREATED,
         success: true,
-        message: 'Review add successfully',
+        message: 'Comment add successfully',
         data: result,
     });
 }));
@@ -32,7 +32,7 @@ const getAllComment = (0, catchAsync_1.default)((req, res, next) => __awaiter(vo
     (0, sendResponse_1.default)(res, {
         statuscode: http_status_1.default.OK,
         success: true,
-        message: 'Comment fetch successfully',
+        message: 'Comment fetched successfully',
         data: result,
     });
 }));
@@ -43,7 +43,7 @@ const editComment = (0, catchAsync_1.default)((req, res, next) => __awaiter(void
     (0, sendResponse_1.default)(res, {
         statuscode: http_status_1.default.OK,
         success: true,
-        message: 'Review edit successfully',
+        message: 'Comment edit successfully',
         data: result,
     });
 }));
