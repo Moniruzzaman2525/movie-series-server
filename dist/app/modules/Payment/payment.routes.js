@@ -12,5 +12,6 @@ const router = express_1.default.Router();
 router.get('/', (0, auth_1.auth)(client_1.UserRole.ADMIN, client_1.UserRole.USER), payment_controller_1.paymentController.getAllPayment);
 router.get('/:email', (0, auth_1.auth)(client_1.UserRole.ADMIN, client_1.UserRole.USER), payment_controller_1.paymentController.getAllPaymentByUser);
 router.post('/', (0, auth_1.auth)(client_1.UserRole.ADMIN, client_1.UserRole.USER), payment_controller_1.paymentController.payment);
-router.patch('/success/:tran_id', payment_controller_1.paymentController.successController);
+router.patch('/success/:tran_id', (0, auth_1.auth)(client_1.UserRole.ADMIN, client_1.UserRole.USER), payment_controller_1.paymentController.successController);
+router.delete('/failed/:tran_id', (0, auth_1.auth)(client_1.UserRole.ADMIN, client_1.UserRole.USER), payment_controller_1.paymentController.failedController);
 exports.paymentRouter = router;

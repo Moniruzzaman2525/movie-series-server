@@ -13,7 +13,7 @@ const router = express_1.default.Router();
 router.get('/category', content_controller_1.contentController.contentByCategory);
 router.get('/', content_controller_1.contentController.getAllContent);
 router.get('/:id', content_controller_1.contentController.getSingleContent);
-router.post('/', utils_1.upload.single('file'), (0, auth_1.auth)(client_1.UserRole.ADMIN, client_1.UserRole.USER), (req, res, next) => {
+router.post('/', utils_1.upload.single('file'), (0, auth_1.auth)(client_1.UserRole.ADMIN), (req, res, next) => {
     req.body = JSON.parse(req.body.data);
     return content_controller_1.contentController.createContent(req, res, next);
 });

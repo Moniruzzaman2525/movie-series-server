@@ -23,6 +23,7 @@ const loginUser = (payload) => __awaiter(void 0, void 0, void 0, function* () {
     const userData = yield prisma_1.default.user.findFirstOrThrow({
         where: {
             email: payload.email,
+            isDeleted: false
         },
     });
     const isCorrectPassword = yield bcrypt_1.default.compare(payload.password, userData.password);

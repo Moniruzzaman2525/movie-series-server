@@ -169,11 +169,21 @@ const getSingleComment = async (commentId: string) => {
 
     return result;
 };
+const getCommentByUser=async (userId: string) => {
 
+    const result = await prisma.comment.findMany({
+        where: {
+            userId: userId,
+        },
+    });
+
+    return result;
+}
 export const CommentServices = {
     addComment,
     getAllComment,
     editComment,
     deleteComment,
-    getSingleComment
+    getSingleComment,
+    getCommentByUser
 }

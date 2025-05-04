@@ -68,10 +68,21 @@ const getSingleComment = (0, catchAsync_1.default)((req, res, next) => __awaiter
         data: result,
     });
 }));
+const getCommentByUser = (0, catchAsync_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id } = req.params;
+    const result = yield comments_services_1.CommentServices.getCommentByUser(id);
+    (0, sendResponse_1.default)(res, {
+        statuscode: http_status_1.default.OK,
+        success: true,
+        message: 'Comment fetched successfully',
+        data: result,
+    });
+}));
 exports.CommentController = {
     addComments,
     getAllComment,
     editComment,
     deleteComment,
-    getSingleComment
+    getSingleComment,
+    getCommentByUser,
 };

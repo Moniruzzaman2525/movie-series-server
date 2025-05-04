@@ -82,11 +82,7 @@ const getAllContent = (params, options) => __awaiter(void 0, void 0, void 0, fun
             take: limit,
             orderBy: { [sortBy || 'createdAt']: sortOrder || 'desc' },
             include: {
-<<<<<<< HEAD
-                comment: {
-=======
                 Comment: {
->>>>>>> bc18c1ac3ff382e4adb0b37489644dd86272fcbb
                     where: {
                         status: {
                             in: ['APPROVED']
@@ -99,14 +95,11 @@ const getAllContent = (params, options) => __awaiter(void 0, void 0, void 0, fun
                             in: ['APPROVED']
                         }
                     }
-<<<<<<< HEAD
-=======
                 },
                 VideoTag: {
                     select: {
                         tag: true
                     }
->>>>>>> bc18c1ac3ff382e4adb0b37489644dd86272fcbb
                 }
             }
         });
@@ -161,11 +154,7 @@ const getContentById = (id) => __awaiter(void 0, void 0, void 0, function* () {
         const content = yield prisma.video.findUnique({
             where: { id },
             include: {
-<<<<<<< HEAD
-                comment: {
-=======
                 Comment: {
->>>>>>> bc18c1ac3ff382e4adb0b37489644dd86272fcbb
                     where: {
                         status: {
                             in: ['APPROVED']
@@ -178,14 +167,11 @@ const getContentById = (id) => __awaiter(void 0, void 0, void 0, function* () {
                             in: ['APPROVED']
                         }
                     }
-<<<<<<< HEAD
-=======
                 },
                 VideoTag: {
                     select: {
                         tag: true
                     }
->>>>>>> bc18c1ac3ff382e4adb0b37489644dd86272fcbb
                 }
             }
         });

@@ -20,8 +20,16 @@ const apiError_1 = __importDefault(require("../../errors/apiError"));
 const SSLCommerzPayment = require('sslcommerz-lts');
 const is_live = false;
 const payment = (data, user) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log(user.id);
-    const { total_amount, cus_name, cus_email, tran_id, cus_phone, cus_add1 } = data;
+    const { total_amount, cus_name, cus_email, tran_id, cus_phone, cus_add1, contentId } = data;
+    const isExist = yield prisma_1.default.payment.findFirst({
+        where: {
+            contentId: contentId,
+            userId: user.id
+        }
+    });
+    if (isExist) {
+        throw new apiError_1.default(http_status_codes_1.StatusCodes.FORBIDDEN, "You have already purchased this content");
+    }
     const sslcz = new SSLCommerzPayment(config_1.default.payment.store_id, config_1.default.payment.store_passwd, is_live);
     const apiResponse = yield sslcz.init(data);
     const GatewayPageURL = apiResponse.GatewayPageURL;
@@ -33,6 +41,7 @@ const payment = (data, user) => __awaiter(void 0, void 0, void 0, function* () {
         cus_phone: cus_phone || '',
         cus_add1: cus_add1 || '',
         userId: user.id,
+        contentId: contentId || '',
         paymentStatus: false,
     };
     yield prisma_1.default.payment.create({
@@ -47,13 +56,30 @@ const successPayment = (tran_id) => __awaiter(void 0, void 0, void 0, function* 
         },
         data: {
             paymentStatus: true
+        },
+        include: {
+            user: true,
+            video: true
+        }
+    });
+    return result;
+});
+const failedPayment = (trx_id) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield prisma_1.default.payment.delete({
+        where: {
+            tran_id: trx_id
         }
     });
     return result;
 });
 const getAllPayment = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const result = yield prisma_1.default.payment.findMany();
+        const result = yield prisma_1.default.payment.findMany({
+            include: {
+                user: true,
+                video: true
+            }
+        });
         return result;
     }
     catch (err) {
@@ -65,6 +91,9 @@ const getAllPaymentByUser = (email) => __awaiter(void 0, void 0, void 0, functio
         const result = yield prisma_1.default.payment.findMany({
             where: {
                 cus_email: email
+            },
+            include: {
+                video: true
             }
         });
         return result;
@@ -77,5 +106,6 @@ exports.paymentService = {
     payment,
     successPayment,
     getAllPayment,
-    getAllPaymentByUser
+    getAllPaymentByUser,
+    failedPayment
 };

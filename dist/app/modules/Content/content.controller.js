@@ -28,7 +28,7 @@ const createContent = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, 
     });
 }));
 const getAllContent = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const filters = (0, content_constans_1.pick)(req.query, ['searchTerm', 'name', 'email', 'category', 'genre']);
+    const filters = (0, content_constans_1.pick)(req.query, ['category', 'genre', 'cast']);
     const options = (0, content_constans_1.pick)(req.query, ['page', 'limit', 'sortBy', 'sortOrder']);
     const result = yield content_service_1.contentService.getAllContent(filters, options);
     (0, sendResponse_1.default)(res, {

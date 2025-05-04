@@ -15,6 +15,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserServices = void 0;
 const prisma_1 = __importDefault(require("../../../helpers/prisma"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
+const apiError_1 = __importDefault(require("../../errors/apiError"));
+const http_status_1 = __importDefault(require("http-status"));
 const createUser = (payload) => __awaiter(void 0, void 0, void 0, function* () {
     const existingUser = yield prisma_1.default.user.findFirst({
         where: {
@@ -22,7 +24,7 @@ const createUser = (payload) => __awaiter(void 0, void 0, void 0, function* () {
         },
     });
     if (existingUser) {
-        throw new Error('User with this email already exists');
+        throw new apiError_1.default(http_status_1.default.BAD_REQUEST, 'User with this email already exists');
     }
     const hashPassword = yield bcrypt_1.default.hash(payload.password, 12);
     const result = yield prisma_1.default.user.create({

@@ -95,6 +95,10 @@ const getSingleReview = (reviewId) => __awaiter(void 0, void 0, void 0, function
         where: {
             id: reviewId,
         },
+        include: {
+            user: true,
+            video: true,
+        }
     });
     return result;
 });

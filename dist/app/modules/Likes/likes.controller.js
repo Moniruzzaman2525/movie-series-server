@@ -34,8 +34,6 @@ const unlikeVideo = (0, catchAsync_1.default)((req, res, next) => __awaiter(void
         statuscode: http_status_1.default.CREATED,
         success: true,
         message: 'Video unlike successfully',
-<<<<<<< HEAD
-=======
         data: result,
     });
 }));
@@ -56,7 +54,6 @@ const unlikeReview = (0, catchAsync_1.default)((req, res, next) => __awaiter(voi
         statuscode: http_status_1.default.CREATED,
         success: true,
         message: 'Review unlike successfully',
->>>>>>> bc18c1ac3ff382e4adb0b37489644dd86272fcbb
         data: result,
     });
 }));

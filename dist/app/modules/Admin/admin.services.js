@@ -20,6 +20,7 @@ const approveOrUnpublishReview = (reviewId, payload) => __awaiter(void 0, void 0
             id: reviewId
         }
     });
+    console.log(payload);
     const result = yield prisma_1.default.review.update({
         where: {
             id: reviewId
@@ -78,15 +79,9 @@ const getAverageRating = (videoId) => __awaiter(void 0, void 0, void 0, function
             id: videoId
         }
     });
-<<<<<<< HEAD
-    const result = yield prisma_1.default.video.aggregate({
-        where: {
-            id: videoId
-=======
     const result = yield prisma_1.default.review.aggregate({
         where: {
             videoId: videoId
->>>>>>> bc18c1ac3ff382e4adb0b37489644dd86272fcbb
         },
         _avg: {
             rating: true
@@ -114,11 +109,49 @@ const getMostReviewedTitle = () => __awaiter(void 0, void 0, void 0, function* (
     });
     return result;
 });
+const getAllUser = () => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield prisma_1.default.user.findMany({
+        where: {
+            isDeleted: false
+        },
+        select: {
+            id: true,
+            name: true,
+            email: true,
+            createAt: true,
+            role: true,
+            updateAt: true,
+        },
+    });
+    return result;
+});
+const removeUser = (userId) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield prisma_1.default.user.update({
+        where: {
+            id: userId
+        },
+        data: {
+            isDeleted: true
+        }
+    });
+    return result;
+});
+const getAllUserReview = (userId) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield prisma_1.default.review.findMany({
+        include: {
+            user: true
+        }
+    });
+    return result;
+});
 exports.AdminServices = {
     approveOrUnpublishReview,
     approveOrUnpublishComment,
     removeInappropriateReview,
     removeInappropriateComment,
     getAverageRating,
-    getMostReviewedTitle
+    getMostReviewedTitle,
+    getAllUser,
+    removeUser,
+    getAllUserReview
 };

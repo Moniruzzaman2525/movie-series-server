@@ -14,4 +14,5 @@ router.post('/', (0, auth_1.auth)(client_1.UserRole.USER), comments_controller_1
 router.patch('/edit-comment/:id', (0, auth_1.auth)(client_1.UserRole.USER), comments_controller_1.CommentController.editComment);
 router.delete('/delete-comment/:id', (0, auth_1.auth)(client_1.UserRole.USER), comments_controller_1.CommentController.deleteComment);
 router.get('/:id', (0, auth_1.auth)(client_1.UserRole.USER), comments_controller_1.CommentController.getSingleComment);
+router.get('/comment-by-user/:id', comments_controller_1.CommentController.getCommentByUser);
 exports.CommentsRoutes = router;

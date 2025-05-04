@@ -15,7 +15,7 @@ const createContent = catchAsync(async (req, res) => {
 });
 
 const getAllContent = catchAsync(async (req, res) => {
-  const filters = pick(req.query, ['searchTerm', 'name', 'email','category', 'genre']);
+  const filters = pick(req.query, ['category', 'genre','cast']);
   const options = pick(req.query, ['page', 'limit', 'sortBy', 'sortOrder']);
   const result = await contentService.getAllContent(filters, options);
   sendResponse(res, {

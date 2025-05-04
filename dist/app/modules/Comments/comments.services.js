@@ -135,10 +135,19 @@ const getSingleComment = (commentId) => __awaiter(void 0, void 0, void 0, functi
     });
     return result;
 });
+const getCommentByUser = (userId) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield prisma_1.default.comment.findMany({
+        where: {
+            userId: userId,
+        },
+    });
+    return result;
+});
 exports.CommentServices = {
     addComment,
     getAllComment,
     editComment,
     deleteComment,
-    getSingleComment
+    getSingleComment,
+    getCommentByUser
 };
