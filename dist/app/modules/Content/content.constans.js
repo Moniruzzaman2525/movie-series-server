@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.pick = exports.calculatePagination = exports.searchableFields = void 0;
-exports.searchableFields = ['title', 'description', 'director', 'cast', 'genre', 'category'];
+exports.searchableFields = ['title', 'description', 'director', 'cast', 'genre', 'category', 'streamingPlatform'];
 const calculatePagination = (options) => {
     const page = Number(options.page) || 1;
     const limit = Number(options.limit) || 10;
@@ -19,8 +19,10 @@ const calculatePagination = (options) => {
 exports.calculatePagination = calculatePagination;
 const pick = (obj, keys) => {
     const finalObj = {};
+    if (!obj)
+        return finalObj;
     for (const key of keys) {
-        if (obj && Object.hasOwnProperty.call(obj, key)) {
+        if (Object.hasOwnProperty.call(obj, key)) {
             finalObj[key] = obj[key];
         }
     }

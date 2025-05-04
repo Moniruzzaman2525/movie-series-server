@@ -1,4 +1,4 @@
-export const searchableFields = ['title', 'description', 'director', 'cast', 'genre','category'];
+export const searchableFields = ['title', 'description', 'director', 'cast', 'genre','category','streamingPlatform'];
 
 export const calculatePagination = (options: {
   page?: number;
@@ -19,13 +19,14 @@ export const calculatePagination = (options: {
     sortOrder,
   };
 };
-
 export const pick = (obj: Record<string, any>, keys: string[]): Record<string, any> => {
   const finalObj: Record<string, any> = {};
+  if (!obj) return finalObj;
   for (const key of keys) {
-    if (obj && Object.hasOwnProperty.call(obj, key)) {
+    if (Object.hasOwnProperty.call(obj, key)) {
       finalObj[key] = obj[key];
     }
   }
   return finalObj;
 };
+

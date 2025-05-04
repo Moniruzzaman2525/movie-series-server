@@ -50,13 +50,18 @@ const createContent = (req) => __awaiter(void 0, void 0, void 0, function* () {
 });
 const getAllContent = (params, options) => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        console.log("Search Params:", params);
         const { searchTerm } = params, exactMatchFields = __rest(params, ["searchTerm"]);
         const { page, limit, sortBy, sortOrder, skip } = (0, content_constans_1.calculatePagination)(options);
         const conditions = [];
-        //*create search conditions for searchable fields
-        if (searchTerm) {
+        //  Ensure searchAble field valid and defined
+        const searchableFields = ['title', 'description',
+            'director', 'cast'
+        ];
+        //* jodi searchTerm and SearchAble field ar value valid hoy thaole ata execute hobe
+        if (searchTerm && searchableFields.length > 0) {
             conditions.push({
-                OR: content_constans_1.searchableFields.map((field) => ({
+                OR: searchableFields.map((field) => ({
                     [field]: {
                         contains: searchTerm,
                         mode: 'insensitive',
@@ -64,57 +69,74 @@ const getAllContent = (params, options) => __awaiter(void 0, void 0, void 0, fun
                 })),
             });
         }
-        //*create conditions for exact match fields
+        const numberFields = ['releaseYear', 'views'];
+        //*  Exact match fields
         if (Object.keys(exactMatchFields).length > 0) {
             conditions.push({
                 AND: Object.entries(exactMatchFields).map(([key, value]) => {
+                    const isNumberField = numberFields.includes(key);
                     if (Array.isArray(value)) {
-                        return { [key]: { in: value } };
+                        return {
+                            [key]: {
+                                in: isNumberField ? value.map(Number) : value,
+                            },
+                        };
                     }
-                    return { [key]: { equals: value } };
+                    return {
+                        [key]: {
+                            equals: isNumberField ? Number(value) : value,
+                        },
+                    };
                 }),
             });
         }
         const whereConditions = conditions.length > 0 ? { AND: conditions } : {};
+        const validSortFields = ['createdAt', 'title'];
+        const sortField = validSortFields.includes(sortBy) ? sortBy : 'createdAt';
+        // Final query
         const result = yield prisma.video.findMany({
             where: whereConditions,
             skip,
             take: limit,
-            orderBy: { [sortBy || 'createdAt']: sortOrder || 'desc' },
+            orderBy: {
+                [sortField]: sortOrder === 'asc' ? 'asc' : 'desc',
+            },
             include: {
                 Comment: {
                     where: {
                         status: {
-                            in: ['APPROVED']
-                        }
-                    }
+                            in: ['APPROVED'],
+                        },
+                    },
                 },
                 review: {
                     where: {
                         status: {
-                            in: ['APPROVED']
-                        }
-                    }
+                            in: ['APPROVED'],
+                        },
+                    },
                 },
                 VideoTag: {
                     select: {
-                        tag: true
-                    }
-                }
-            }
+                        tag: true,
+                    },
+                },
+            },
+        });
+        const total = yield prisma.video.count({
+            where: whereConditions,
         });
         return {
             meta: {
                 page,
                 limit,
-                total: yield prisma.video.count({
-                    where: whereConditions,
-                }),
+                total,
             },
             data: result,
         };
     }
     catch (err) {
+        console.error("Prisma Error:", err);
         const error = err instanceof Error ? err : new Error('Database operation failed');
         throw new apiError_1.default(http_status_1.default.INTERNAL_SERVER_ERROR, error.message);
     }
