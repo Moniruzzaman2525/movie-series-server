@@ -28,10 +28,15 @@ const createContent = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, 
     });
 }));
 const getAllContent = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+<<<<<<< HEAD
     console.log(req.query);
+=======
+    const user = req.user;
+    const userId = user ? user.id : null;
+>>>>>>> c02165ee2dfb1a0b229f093668bc3e285b1f4d94
     const filters = (0, content_constans_1.pick)(req.query, ['category', 'genre', "releaseYear", 'searchTerm']);
     const options = (0, content_constans_1.pick)(req.query, ['page', 'limit', 'sortBy', 'sortOrder']);
-    const result = yield content_service_1.contentService.getAllContent(filters, options);
+    const result = yield content_service_1.contentService.getAllContent(filters, options, userId);
     (0, sendResponse_1.default)(res, {
         success: true,
         message: 'Content fetched successfully',
@@ -70,8 +75,6 @@ const getSingleContent = (0, catchAsync_1.default)((req, res) => __awaiter(void 
     });
 }));
 const contentByCategory = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log(req);
-    // const { id } = req.params;
     const result = yield content_service_1.contentService.contentGetCategory();
     console.log(result);
     (0, sendResponse_1.default)(res, {

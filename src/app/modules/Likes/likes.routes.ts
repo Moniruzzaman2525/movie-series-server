@@ -7,10 +7,8 @@ const router = express.Router();
 
 
 router.post('/video/like', auth(UserRole.USER, UserRole.ADMIN), LikeController.likeVideo);
-router.post('/video/un-like', auth(UserRole.USER, UserRole.ADMIN), LikeController.unlikeVideo);
-
 router.post('/review/like', auth(UserRole.USER, UserRole.ADMIN), LikeController.likeReview);
-router.post('/review/un-like', auth(UserRole.USER, UserRole.ADMIN), LikeController.unlikeReview);
+router.post('/comment/like', auth(UserRole.USER, UserRole.ADMIN), LikeController.likeComment);
 
 
 export const LikesRoutes = router;

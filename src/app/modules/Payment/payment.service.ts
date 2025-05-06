@@ -7,15 +7,15 @@ const SSLCommerzPayment = require('sslcommerz-lts')
 
 const is_live = false
 const payment = async (data: Partial<TPaymentData>, user: any) => {
-  const { total_amount, cus_name, cus_email, tran_id, cus_phone, cus_add1,contentId} = data;
+  const { total_amount, cus_name, cus_email, tran_id, cus_phone, cus_add1, contentId } = data;
 
-  const isExist=await prisma.payment.findFirst({
-    where:{
-      contentId:contentId,
-      userId:user.id
+  const isExist = await prisma.payment.findFirst({
+    where: {
+      contentId: contentId,
+      userId: user.id
     }
   })
-  if(isExist){
+  if (isExist) {
     throw new ApiError(StatusCodes.FORBIDDEN, "You have already purchased this content")
   }
   const sslcz = new SSLCommerzPayment(
@@ -31,11 +31,11 @@ const payment = async (data: Partial<TPaymentData>, user: any) => {
     total_amount: Number(total_amount),
     cus_name: cus_name || '',
     cus_email: cus_email || '',
-    tran_id: tran_id || '', 
+    tran_id: tran_id || '',
     cus_phone: cus_phone || '',
     cus_add1: cus_add1 || '',
     userId: user.id,
-    contentId:contentId || '',
+    contentId: contentId || '',
     paymentStatus: false,
   };
   await prisma.payment.create({
@@ -44,65 +44,65 @@ const payment = async (data: Partial<TPaymentData>, user: any) => {
   return GatewayPageURL;
 };
 
- const successPayment= async (tran_id:any) => {
-   const result=await prisma.payment.update({
-    where:{
-      tran_id:tran_id
+const successPayment = async (tran_id: any) => {
+  const result = await prisma.payment.update({
+    where: {
+      tran_id: tran_id
     },
-    data:{
-      paymentStatus:true
+    data: {
+      paymentStatus: true
     },
-    include:{
-      user:true,
-      video:true
+    include: {
+      user: true,
+      video: true
     }
-   })
-   return result
+  })
+  return result
 };
 
-const failedPayment= async (trx_id:any) => {
- const result=await prisma.payment.delete({
-  where:{
-    tran_id:trx_id
+const failedPayment = async (trx_id: any) => {
+  const result = await prisma.payment.delete({
+    where: {
+      tran_id: trx_id
+    }
   }
- }
-)
-return result
+  )
+  return result
 }
 
 const getAllPayment = async () => {
-  try{
+  try {
     const result = await prisma.payment.findMany({
-      include:{
-        user:true,
-        video:true
+      include: {
+        user: true,
+        video: true
       }
     });
-  return result;
-  }catch(err){
+    return result;
+  } catch (err) {
     throw new ApiError(StatusCodes.FORBIDDEN, "Something went wrong")
   }
 }
 
-const getAllPaymentByUser = async (email:string) => {
-  try{
+const getAllPaymentByUser = async (email: string) => {
+  try {
     const result = await prisma.payment.findMany({
-      where:{
-        cus_email:email
+      where: {
+        cus_email: email
       },
-      include:{
-        video:true
+      include: {
+        video: true
       }
     });
-  return result;
-  }catch(err){
+    return result;
+  } catch (err) {
     throw new ApiError(StatusCodes.FORBIDDEN, "Something went wrong")
   }
 }
-export const paymentService={
-    payment,
-    successPayment,
-    getAllPayment,
-    getAllPaymentByUser,
-    failedPayment
+export const paymentService = {
+  payment,
+  successPayment,
+  getAllPayment,
+  getAllPaymentByUser,
+  failedPayment
 }

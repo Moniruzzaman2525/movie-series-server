@@ -93,6 +93,47 @@ const getAllComment = async () => {
     const result = await prisma.comment.findMany()
     return result;
 };
+const getCommentByContent = async (contentId: string, userId?: string) => {
+
+    console.log(contentId)
+    await prisma.video.findFirstOrThrow({
+        where: {
+            id: contentId,
+        },
+    });
+
+    const result = await prisma.comment.findMany({
+        where: {
+            videoId: contentId,
+            OR: [
+                { status: 'APPROVED' },
+                ...(userId ? [{ userId }] : []),
+            ],
+            parentCommentId: null,
+        },
+        include: {
+            replies: {
+                where: {
+                    OR: [
+                        { status: 'APPROVED' },
+                        ...(userId ? [{ userId }] : []),
+                    ],
+                },
+                include: {
+                    user: true,
+                },
+            },
+            user: true,
+            Like: userId
+                ? {
+                    where: { userId },
+                    select: { commentId: true },
+                }
+                : false,
+        },
+    })
+    return result;
+};
 
 const editComment = async (user: IAuthUser, commentId: string, payload: any) => {
     if (!user) {
@@ -169,7 +210,7 @@ const getSingleComment = async (commentId: string) => {
 
     return result;
 };
-const getCommentByUser=async (userId: string) => {
+const getCommentByUser = async (userId: string) => {
 
     const result = await prisma.comment.findMany({
         where: {
@@ -185,5 +226,6 @@ export const CommentServices = {
     editComment,
     deleteComment,
     getSingleComment,
-    getCommentByUser
+    getCommentByUser,
+    getCommentByContent
 }

@@ -24,6 +24,19 @@ const getAllComment = catchAsync(async (req, res, next) => {
         data: result,
     });
 });
+const getCommentByContent = catchAsync(async (req, res, next) => {
+    const contentId = req.params.id;
+    const user = req.user
+    const userId = user ? user.id : null;
+
+    const result = await CommentServices.getCommentByContent(contentId, userId);
+    sendResponse(res, {
+        statuscode: httpStatus.OK,
+        success: true,
+        message: 'Comment fetched successfully',
+        data: result,
+    });
+});
 
 const editComment = catchAsync(async (req, res, next) => {
     const user = req.user;
@@ -61,7 +74,7 @@ const getSingleComment = catchAsync(async (req, res, next) => {
 });
 
 const getCommentByUser = catchAsync(async (req, res, next) => {
-    const {id}=req.params
+    const { id } = req.params
     const result = await CommentServices.getCommentByUser(id);
     sendResponse(res, {
         statuscode: httpStatus.OK,
@@ -77,4 +90,5 @@ export const CommentController = {
     deleteComment,
     getSingleComment,
     getCommentByUser,
+    getCommentByContent,
 };

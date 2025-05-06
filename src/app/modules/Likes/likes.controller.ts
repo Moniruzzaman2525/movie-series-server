@@ -7,42 +7,34 @@ import { LikeServices } from './likes.services';
 const likeVideo = catchAsync(async (req, res, next) => {
     const user = req.user;
     const result = await LikeServices.likeVideo(user as IAuthUser, req.body);
+
     sendResponse(res, {
         statuscode: httpStatus.CREATED,
         success: true,
-        message: 'Video like successfully',
+        message: result.message,
         data: result,
     });
 });
 
-const unlikeVideo = catchAsync(async (req, res, next) => {
-    const user = req.user;
-    const result = await LikeServices.unlikeVideo(user as IAuthUser, req.body);
-    sendResponse(res, {
-        statuscode: httpStatus.CREATED,
-        success: true,
-        message: 'Video unlike successfully',
-        data: result,
-    });
-});
+
 const likeReview = catchAsync(async (req, res, next) => {
     const user = req.user;
     const result = await LikeServices.likeReview(user as IAuthUser, req.body);
     sendResponse(res, {
         statuscode: httpStatus.CREATED,
         success: true,
-        message: 'Review like successfully',
+        message: result.message,
         data: result,
     });
 });
 
-const unlikeReview = catchAsync(async (req, res, next) => {
+const likeComment = catchAsync(async (req, res, next) => {
     const user = req.user;
-    const result = await LikeServices.unlikeReview(user as IAuthUser, req.body);
+    const result = await LikeServices.likeComment(user as IAuthUser, req.body);
     sendResponse(res, {
         statuscode: httpStatus.CREATED,
         success: true,
-        message: 'Review unlike successfully',
+        message: result.message,
         data: result,
     });
 });
@@ -50,7 +42,6 @@ const unlikeReview = catchAsync(async (req, res, next) => {
 
 export const LikeController = {
     likeVideo,
-    unlikeVideo,
     likeReview,
-    unlikeReview
+    likeComment
 };

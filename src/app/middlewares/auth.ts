@@ -2,7 +2,6 @@ import { NextFunction, Request, Response } from 'express';
 import { jwtHelpers } from '../../helpers/jwtHelpers';
 import config from '../../config';
 import { JwtPayload, Secret } from 'jsonwebtoken';
-import { StatusCodes } from 'http-status-codes';
 import ApiError from '../errors/apiError';
 import httpStatus from 'http-status';
 

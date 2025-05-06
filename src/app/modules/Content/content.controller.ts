@@ -3,6 +3,7 @@ import catchAsync from '../../../shared/catchAsync';
 import sendResponse from '../../../shared/sendResponse';
 import { contentService } from './content.service';
 import { pick } from './content.constans';
+import { IAuthUser } from '../../interface/common';
 
 const createContent = catchAsync(async (req, res) => {
   const result = await contentService.createContent(req);
@@ -15,10 +16,13 @@ const createContent = catchAsync(async (req, res) => {
 });
 
 const getAllContent = catchAsync(async (req, res) => {
-console.log(req.query);
-const filters = pick(req.query, ['category', 'genre',"releaseYear",'searchTerm']);
+  const user = req.user
+  const userId = user ? user.id : null;
+
+
+  const filters = pick(req.query, ['category', 'genre', "releaseYear", 'searchTerm']);
   const options = pick(req.query, ['page', 'limit', 'sortBy', 'sortOrder']);
-  const result = await contentService.getAllContent(filters, options);
+  const result = await contentService.getAllContent(filters, options, userId);
   sendResponse(res, {
     success: true,
     message: 'Content fetched successfully',
@@ -61,8 +65,7 @@ const getSingleContent = catchAsync(async (req, res) => {
 });
 
 const contentByCategory = catchAsync(async (req, res) => {
-  console.log(req);
-  // const { id } = req.params;
+
   const result = await contentService.contentGetCategory();
   console.log(result);
   sendResponse(res, {

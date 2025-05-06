@@ -70,10 +70,14 @@ model Like {
   reviewId String?
   review   Review? @relation(fields: [reviewId], references: [id])
 
+  commentId String?
+  comment   Comment? @relation(fields: [commentId], references: [id])
+
   createdAt DateTime @default(now())
 
   @@unique([userId, videoId])
   @@unique([userId, reviewId])
+  @@unique([userId, commentId])
   @@map("likes")
 }
 
@@ -129,6 +133,7 @@ model Comment {
   status    CommentStatus @default(PENDING)
   content   String
   createdAt DateTime      @default(now())
+  like      Int?          @default(0)
 
   reviewId String?
   review   Review? @relation(fields: [reviewId], references: [id])
@@ -137,6 +142,7 @@ model Comment {
   parentComment   Comment? @relation("CommentReplies", fields: [parentCommentId], references: [id])
 
   replies Comment[] @relation("CommentReplies")
+  Like    Like[]
 
   @@map("comments")
 }

@@ -10,7 +10,6 @@ const auth_1 = require("../../middlewares/auth");
 const client_1 = require("@prisma/client");
 const router = express_1.default.Router();
 router.post('/video/like', (0, auth_1.auth)(client_1.UserRole.USER, client_1.UserRole.ADMIN), likes_controller_1.LikeController.likeVideo);
-router.post('/video/un-like', (0, auth_1.auth)(client_1.UserRole.USER, client_1.UserRole.ADMIN), likes_controller_1.LikeController.unlikeVideo);
 router.post('/review/like', (0, auth_1.auth)(client_1.UserRole.USER, client_1.UserRole.ADMIN), likes_controller_1.LikeController.likeReview);
-router.post('/review/un-like', (0, auth_1.auth)(client_1.UserRole.USER, client_1.UserRole.ADMIN), likes_controller_1.LikeController.unlikeReview);
+router.post('/comment/like', (0, auth_1.auth)(client_1.UserRole.USER, client_1.UserRole.ADMIN), likes_controller_1.LikeController.likeComment);
 exports.LikesRoutes = router;

@@ -3,11 +3,12 @@ import { contentController } from './content.controller';
 import { upload } from '../../../utils';
 import { auth } from '../../middlewares/auth';
 import { UserRole } from '@prisma/client';
+import alowAuth from '../../middlewares/alowAuth';
 const router = express.Router();
 
 router.get('/category', contentController.contentByCategory);
 
-router.get('/', contentController.getAllContent);
+router.get('/', alowAuth(UserRole.USER, UserRole.ADMIN), contentController.getAllContent);
 
 router.get('/:id', contentController.getSingleContent);
 

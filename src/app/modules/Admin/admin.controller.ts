@@ -79,6 +79,17 @@ const getAllUser = catchAsync(async (req, res, next) => {
         data: result
     });
 });
+const getAllUserComments = catchAsync(async (req, res, next) => {
+
+    const result = await AdminServices.getAllUserComments();
+
+    sendResponse(res, {
+        statuscode: httpStatus.OK,
+        success: true,
+        message: 'All user comments has been successfully fetched.',
+        data: result
+    });
+});
 
 const getMostReviewedTitle = catchAsync(async (req, res, next) => {
 
@@ -105,6 +116,20 @@ const removeUser = catchAsync(async (req, res, next) => {
         data: result
     });
 });
+const activeUser = catchAsync(async (req, res, next) => {
+
+    const userId = req.params.id
+
+    const result = await AdminServices.activeUser(userId);
+
+    sendResponse(res, {
+        statuscode: httpStatus.OK,
+        success: true,
+        message: 'User has been successfully deleted.',
+        data: result
+    });
+});
+
 const getAllUserReview = catchAsync(async (req, res, next) => {
 
     const userId = req.params.id
@@ -129,5 +154,7 @@ export const AdminController = {
     getMostReviewedTitle,
     getAllUser,
     removeUser,
-    getAllUserReview
+    getAllUserReview,
+    getAllUserComments,
+    activeUser
 };

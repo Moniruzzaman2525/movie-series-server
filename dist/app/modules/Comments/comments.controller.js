@@ -36,6 +36,18 @@ const getAllComment = (0, catchAsync_1.default)((req, res, next) => __awaiter(vo
         data: result,
     });
 }));
+const getCommentByContent = (0, catchAsync_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const contentId = req.params.id;
+    const user = req.user;
+    const userId = user ? user.id : null;
+    const result = yield comments_services_1.CommentServices.getCommentByContent(contentId, userId);
+    (0, sendResponse_1.default)(res, {
+        statuscode: http_status_1.default.OK,
+        success: true,
+        message: 'Comment fetched successfully',
+        data: result,
+    });
+}));
 const editComment = (0, catchAsync_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const user = req.user;
     const commentId = req.params.id;
@@ -85,4 +97,8 @@ exports.CommentController = {
     deleteComment,
     getSingleComment,
     getCommentByUser,
+<<<<<<< HEAD
+=======
+    getCommentByContent,
+>>>>>>> c02165ee2dfb1a0b229f093668bc3e285b1f4d94
 };

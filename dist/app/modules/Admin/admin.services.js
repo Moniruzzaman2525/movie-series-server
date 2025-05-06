@@ -48,12 +48,12 @@ const approveOrUnpublishComment = (commentId, payload) => __awaiter(void 0, void
     return result;
 });
 const removeInappropriateReview = (reviewId) => __awaiter(void 0, void 0, void 0, function* () {
-    yield prisma_1.default.comment.findFirstOrThrow({
+    yield prisma_1.default.review.findFirstOrThrow({
         where: {
             id: reviewId
         }
     });
-    const result = yield prisma_1.default.comment.delete({
+    const result = yield prisma_1.default.review.delete({
         where: {
             id: reviewId
         }
@@ -90,21 +90,129 @@ const getAverageRating = (videoId) => __awaiter(void 0, void 0, void 0, function
     return result;
 });
 const getMostReviewedTitle = () => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield prisma_1.default.video.findMany({
-        orderBy: {
-            review: {
-                _count: 'desc',
-            }
+    const titles = yield prisma_1.default.video.findMany({
+        include: {
+            review: true,
         },
-        take: 10,
+    });
+    const reviews = yield prisma_1.default.review.findMany({
+        include: {
+            user: true,
+            video: true,
+        }
+    });
+    const totalReviews = reviews.length;
+    const averageRating = reviews.reduce((sum, review) => sum + review.rating, 0) / totalReviews;
+    const titlesReviewed = titles.length;
+    const activeReviewers = yield prisma_1.default.user.count();
+    const stats = {
+        totalReviews,
+        averageRating: averageRating.toFixed(1),
+        titlesReviewed,
+        activeReviewers,
+    };
+    const formattedTitles = titles.map((video) => {
+        const reviewCount = video.review.length;
+        const averageVideoRating = video.review.reduce((sum, review) => sum + review.rating, 0) / reviewCount || 0;
+        return {
+            id: video.id,
+            title: video.title,
+            category: video.category,
+            reviewCount,
+            averageRating: averageVideoRating.toFixed(1),
+        };
+    });
+    const ratingSummary = [1, 2, 3, 4, 5].map((rating) => {
+        const count = reviews.filter((review) => review.rating === rating).length;
+        return {
+            rating,
+            count,
+            percentage: ((count / totalReviews) * 100).toFixed(0),
+        };
+    });
+    const formattedReviews = reviews
+        .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+        .slice(0, 7)
+        .map((review) => {
+        const createdAt = new Date(review.createdAt).getTime();
+        const hoursAgo = Math.floor((new Date().getTime() - createdAt) / (1000 * 60 * 60));
+        return {
+            id: review.id,
+            title: review.video.title,
+            user: {
+                name: review.user.name || "N/A",
+                // avatar: review.user.
+            },
+            rating: review.rating,
+            comment: review.content,
+            date: `${hoursAgo} hours ago`,
+        };
+    });
+    const demoData = {
+        stats,
+        titles: formattedTitles,
+        ratingSummary,
+        reviews: formattedReviews,
+    };
+    return demoData;
+});
+const getAllUser = () => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield prisma_1.default.user.findMany({
+        orderBy: {
+            createAt: 'asc'
+        },
         select: {
             id: true,
-            title: true,
-            _count: {
-                select: {
-                    review: true
-                }
-            }
+            name: true,
+            email: true,
+            createAt: true,
+            role: true,
+            isDeleted: true,
+            updateAt: true,
+        },
+    });
+    return result;
+});
+const getAllUserComments = () => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield prisma_1.default.comment.findMany({
+        include: {
+            user: true
+        },
+        orderBy: {
+            createdAt: 'asc'
+        }
+    });
+    return result;
+});
+const removeUser = (userId) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield prisma_1.default.user.update({
+        where: {
+            id: userId
+        },
+        data: {
+            isDeleted: true
+        }
+    });
+    return result;
+});
+const activeUser = (userId) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield prisma_1.default.user.update({
+        where: {
+            id: userId
+        },
+        data: {
+            isDeleted: false
+        }
+    });
+    return result;
+});
+const getAllUserReview = (userId) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield prisma_1.default.review.findMany({
+        include: {
+            user: true
+        },
+        orderBy: {
+            createdAt: 'asc'
         }
     });
     return result;
@@ -153,5 +261,11 @@ exports.AdminServices = {
     getMostReviewedTitle,
     getAllUser,
     removeUser,
+<<<<<<< HEAD
     getAllUserReview
+=======
+    getAllUserReview,
+    getAllUserComments,
+    activeUser,
+>>>>>>> c02165ee2dfb1a0b229f093668bc3e285b1f4d94
 };

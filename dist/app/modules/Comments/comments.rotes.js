@@ -10,9 +10,18 @@ const client_1 = require("@prisma/client");
 const comments_controller_1 = require("./comments.controller");
 const router = express_1.default.Router();
 router.get('/', (0, auth_1.auth)(client_1.UserRole.USER, client_1.UserRole.ADMIN), comments_controller_1.CommentController.getAllComment);
+<<<<<<< HEAD
 router.post('/', (0, auth_1.auth)(client_1.UserRole.USER), comments_controller_1.CommentController.addComments);
 router.patch('/edit-comment/:id', (0, auth_1.auth)(client_1.UserRole.USER), comments_controller_1.CommentController.editComment);
 router.delete('/delete-comment/:id', (0, auth_1.auth)(client_1.UserRole.USER), comments_controller_1.CommentController.deleteComment);
 router.get('/:id', (0, auth_1.auth)(client_1.UserRole.USER), comments_controller_1.CommentController.getSingleComment);
 router.get('/comment-by-user/:id', comments_controller_1.CommentController.getCommentByUser);
+=======
+router.post('/', (0, auth_1.auth)(client_1.UserRole.USER, client_1.UserRole.ADMIN), comments_controller_1.CommentController.addComments);
+router.patch('/edit-comment/:id', (0, auth_1.auth)(client_1.UserRole.USER, client_1.UserRole.ADMIN), comments_controller_1.CommentController.editComment);
+router.delete('/delete-comment/:id', (0, auth_1.auth)(client_1.UserRole.USER, client_1.UserRole.ADMIN), comments_controller_1.CommentController.deleteComment);
+router.get('/:id', (0, auth_1.auth)(client_1.UserRole.USER, client_1.UserRole.ADMIN), comments_controller_1.CommentController.getSingleComment);
+router.get('/comment-by-user/:id', comments_controller_1.CommentController.getCommentByUser);
+router.get('/comment-by-content/:id', (0, auth_1.auth)(client_1.UserRole.USER, client_1.UserRole.ADMIN), comments_controller_1.CommentController.getCommentByContent);
+>>>>>>> c02165ee2dfb1a0b229f093668bc3e285b1f4d94
 exports.CommentsRoutes = router;

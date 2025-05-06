@@ -48,17 +48,21 @@ const createContent = (req) => __awaiter(void 0, void 0, void 0, function* () {
         throw new apiError_1.default(http_status_1.default.FORBIDDEN, err.message);
     }
 });
-const getAllContent = (params, options) => __awaiter(void 0, void 0, void 0, function* () {
+const getAllContent = (params, options, userId) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         console.log("Search Params:", params);
         const { searchTerm } = params, exactMatchFields = __rest(params, ["searchTerm"]);
         const { page, limit, sortBy, sortOrder, skip } = (0, content_constans_1.calculatePagination)(options);
         const conditions = [];
+<<<<<<< HEAD
         //  Ensure searchAble field valid and defined
         const searchableFields = ['title', 'description',
             'director', 'cast'
         ];
         //* jodi searchTerm and SearchAble field ar value valid hoy thaole ata execute hobe
+=======
+        const searchableFields = ['title', 'description', 'director', 'cast'];
+>>>>>>> c02165ee2dfb1a0b229f093668bc3e285b1f4d94
         if (searchTerm && searchableFields.length > 0) {
             conditions.push({
                 OR: searchableFields.map((field) => ({
@@ -70,7 +74,10 @@ const getAllContent = (params, options) => __awaiter(void 0, void 0, void 0, fun
             });
         }
         const numberFields = ['releaseYear', 'views'];
+<<<<<<< HEAD
         //*  Exact match fields
+=======
+>>>>>>> c02165ee2dfb1a0b229f093668bc3e285b1f4d94
         if (Object.keys(exactMatchFields).length > 0) {
             conditions.push({
                 AND: Object.entries(exactMatchFields).map(([key, value]) => {
@@ -93,7 +100,10 @@ const getAllContent = (params, options) => __awaiter(void 0, void 0, void 0, fun
         const whereConditions = conditions.length > 0 ? { AND: conditions } : {};
         const validSortFields = ['createdAt', 'title'];
         const sortField = validSortFields.includes(sortBy) ? sortBy : 'createdAt';
+<<<<<<< HEAD
         // Final query
+=======
+>>>>>>> c02165ee2dfb1a0b229f093668bc3e285b1f4d94
         const result = yield prisma.video.findMany({
             where: whereConditions,
             skip,
@@ -104,16 +114,51 @@ const getAllContent = (params, options) => __awaiter(void 0, void 0, void 0, fun
             include: {
                 Comment: {
                     where: {
+<<<<<<< HEAD
                         status: {
                             in: ['APPROVED'],
                         },
+=======
+                        OR: [
+                            { status: 'APPROVED' },
+                            ...(userId ? [{ userId }] : []),
+                        ],
+                        parentCommentId: null,
+                    },
+                    include: {
+                        replies: {
+                            where: {
+                                OR: [
+                                    { status: 'APPROVED' },
+                                    ...(userId ? [{ userId }] : []),
+                                ],
+                            },
+                            include: {
+                                user: true,
+                            },
+                        },
+                        user: true,
+                        Like: userId
+                            ? {
+                                where: { userId },
+                                select: { commentId: true },
+                            }
+                            : false,
+>>>>>>> c02165ee2dfb1a0b229f093668bc3e285b1f4d94
                     },
                 },
                 review: {
                     where: {
+<<<<<<< HEAD
                         status: {
                             in: ['APPROVED'],
                         },
+=======
+                        OR: [
+                            { status: 'APPROVED' },
+                            ...(userId ? [{ userId }] : []),
+                        ],
+>>>>>>> c02165ee2dfb1a0b229f093668bc3e285b1f4d94
                     },
                 },
                 VideoTag: {
@@ -121,8 +166,27 @@ const getAllContent = (params, options) => __awaiter(void 0, void 0, void 0, fun
                         tag: true,
                     },
                 },
+<<<<<<< HEAD
             },
         });
+=======
+                Like: userId ? {
+                    where: {
+                        userId: userId,
+                    },
+                    select: {
+                        videoId: true,
+                    },
+                } : undefined,
+            },
+        });
+        if (userId) {
+            result.forEach((video) => {
+                const likedVideoIds = video.Like ? video.Like.map(like => like.videoId) : [];
+                video.liked = likedVideoIds.includes(video.id);
+            });
+        }
+>>>>>>> c02165ee2dfb1a0b229f093668bc3e285b1f4d94
         const total = yield prisma.video.count({
             where: whereConditions,
         });
@@ -165,7 +229,7 @@ const updateContent = (id, req) => __awaiter(void 0, void 0, void 0, function* (
         throw new apiError_1.default(http_status_1.default.FORBIDDEN, err.message);
     }
 });
-const getContentById = (id) => __awaiter(void 0, void 0, void 0, function* () {
+const getContentById = (id, userId) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const isExist = yield prisma.video.findUnique({
             where: { id },
@@ -178,24 +242,55 @@ const getContentById = (id) => __awaiter(void 0, void 0, void 0, function* () {
             include: {
                 Comment: {
                     where: {
-                        status: {
-                            in: ['APPROVED']
-                        }
-                    }
+                        OR: [
+                            { status: 'APPROVED' },
+                            ...(userId ? [{ userId }] : []),
+                        ],
+                        parentCommentId: null,
+                    },
+                    include: {
+                        replies: {
+                            where: {
+                                OR: [
+                                    { status: 'APPROVED' },
+                                    ...(userId ? [{ userId }] : []),
+                                ],
+                            },
+                            include: {
+                                user: true,
+                            },
+                        },
+                        user: true,
+                        Like: userId
+                            ? {
+                                where: { userId },
+                                select: { commentId: true },
+                            }
+                            : false,
+                    },
                 },
                 review: {
                     where: {
-                        status: {
-                            in: ['APPROVED']
-                        }
-                    }
+                        OR: [
+                            { status: 'APPROVED' },
+                            ...(userId ? [{ userId }] : []),
+                        ],
+                    },
                 },
                 VideoTag: {
                     select: {
-                        tag: true
-                    }
-                }
-            }
+                        tag: true,
+                    },
+                },
+                Like: userId ? {
+                    where: {
+                        userId: userId,
+                    },
+                    select: {
+                        videoId: true,
+                    },
+                } : undefined,
+            },
         });
         return content;
     }
@@ -226,7 +321,6 @@ const contentGetCategory = () => __awaiter(void 0, void 0, void 0, function* () 
             where: {
                 category: {
                     equals: "SERIES",
-                    // mode:"insensitive"
                 }
             }
         });

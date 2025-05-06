@@ -74,6 +74,45 @@ const getAllComment = () => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield prisma_1.default.comment.findMany();
     return result;
 });
+const getCommentByContent = (contentId, userId) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log(contentId);
+    yield prisma_1.default.video.findFirstOrThrow({
+        where: {
+            id: contentId,
+        },
+    });
+    const result = yield prisma_1.default.comment.findMany({
+        where: {
+            videoId: contentId,
+            OR: [
+                { status: 'APPROVED' },
+                ...(userId ? [{ userId }] : []),
+            ],
+            parentCommentId: null,
+        },
+        include: {
+            replies: {
+                where: {
+                    OR: [
+                        { status: 'APPROVED' },
+                        ...(userId ? [{ userId }] : []),
+                    ],
+                },
+                include: {
+                    user: true,
+                },
+            },
+            user: true,
+            Like: userId
+                ? {
+                    where: { userId },
+                    select: { commentId: true },
+                }
+                : false,
+        },
+    });
+    return result;
+});
 const editComment = (user, commentId, payload) => __awaiter(void 0, void 0, void 0, function* () {
     if (!user) {
         throw new apiError_1.default(http_status_1.default.UNAUTHORIZED, 'User is not authenticated');
@@ -149,5 +188,10 @@ exports.CommentServices = {
     editComment,
     deleteComment,
     getSingleComment,
+<<<<<<< HEAD
     getCommentByUser
+=======
+    getCommentByUser,
+    getCommentByContent
+>>>>>>> c02165ee2dfb1a0b229f093668bc3e285b1f4d94
 };
