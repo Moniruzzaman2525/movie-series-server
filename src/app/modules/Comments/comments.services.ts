@@ -95,7 +95,6 @@ const getAllComment = async () => {
 };
 const getCommentByContent = async (contentId: string, userId?: string) => {
 
-    console.log(contentId)
     await prisma.video.findFirstOrThrow({
         where: {
             id: contentId,
@@ -130,6 +129,9 @@ const getCommentByContent = async (contentId: string, userId?: string) => {
                     select: { commentId: true },
                 }
                 : false,
+        },
+        orderBy: {
+            createdAt: 'desc',
         },
     })
     return result;

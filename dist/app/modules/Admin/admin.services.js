@@ -20,7 +20,6 @@ const approveOrUnpublishReview = (reviewId, payload) => __awaiter(void 0, void 0
             id: reviewId
         }
     });
-    console.log(payload);
     const result = yield prisma_1.default.review.update({
         where: {
             id: reviewId
@@ -217,41 +216,6 @@ const getAllUserReview = (userId) => __awaiter(void 0, void 0, void 0, function*
     });
     return result;
 });
-const getAllUser = () => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield prisma_1.default.user.findMany({
-        where: {
-            isDeleted: false
-        },
-        select: {
-            id: true,
-            name: true,
-            email: true,
-            createAt: true,
-            role: true,
-            updateAt: true,
-        },
-    });
-    return result;
-});
-const removeUser = (userId) => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield prisma_1.default.user.update({
-        where: {
-            id: userId
-        },
-        data: {
-            isDeleted: true
-        }
-    });
-    return result;
-});
-const getAllUserReview = (userId) => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield prisma_1.default.review.findMany({
-        include: {
-            user: true
-        }
-    });
-    return result;
-});
 exports.AdminServices = {
     approveOrUnpublishReview,
     approveOrUnpublishComment,
@@ -261,11 +225,7 @@ exports.AdminServices = {
     getMostReviewedTitle,
     getAllUser,
     removeUser,
-<<<<<<< HEAD
-    getAllUserReview
-=======
     getAllUserReview,
     getAllUserComments,
     activeUser,
->>>>>>> c02165ee2dfb1a0b229f093668bc3e285b1f4d94
 };

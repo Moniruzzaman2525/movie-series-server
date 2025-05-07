@@ -9,11 +9,6 @@ const admin_controller_1 = require("./admin.controller");
 const auth_1 = require("../../middlewares/auth");
 const client_1 = require("@prisma/client");
 const router = express_1.default.Router();
-<<<<<<< HEAD
-router.get('/get-most-review-title', (0, auth_1.auth)(client_1.UserRole.ADMIN), admin_controller_1.AdminController.getMostReviewedTitle);
-router.get('/get-all-user', (0, auth_1.auth)(client_1.UserRole.ADMIN), admin_controller_1.AdminController.getAllUser);
-router.get('/get-user-review', (0, auth_1.auth)(client_1.UserRole.ADMIN), admin_controller_1.AdminController.getAllUserReview);
-=======
 router.get('/get-most-review-title', admin_controller_1.AdminController.getMostReviewedTitle);
 router.get('/get-all-user', (0, auth_1.auth)(client_1.UserRole.ADMIN), admin_controller_1.AdminController.getAllUser);
 router.get('/get-user-review', (0, auth_1.auth)(client_1.UserRole.ADMIN), admin_controller_1.AdminController.getAllUserReview);
@@ -21,10 +16,8 @@ router.get('/get-user-comments', (0, auth_1.auth)(client_1.UserRole.ADMIN), admi
 router.post('/comment/:id', (0, auth_1.auth)(client_1.UserRole.ADMIN), admin_controller_1.AdminController.approveOrUnpublishComment);
 router.patch('/remove-user/:id', (0, auth_1.auth)(client_1.UserRole.ADMIN), admin_controller_1.AdminController.removeUser);
 router.patch('/active-user/:id', (0, auth_1.auth)(client_1.UserRole.ADMIN), admin_controller_1.AdminController.activeUser);
->>>>>>> c02165ee2dfb1a0b229f093668bc3e285b1f4d94
 router.get('/get-aggregated-ratting/:id', (0, auth_1.auth)(client_1.UserRole.ADMIN), admin_controller_1.AdminController.getAverageRating);
 router.patch('/review/:id', (0, auth_1.auth)(client_1.UserRole.ADMIN), admin_controller_1.AdminController.approveOrUnpublishReview);
 router.delete('/remove-inappropriate-review/:id', (0, auth_1.auth)(client_1.UserRole.ADMIN), admin_controller_1.AdminController.removeInappropriateReview);
 router.delete('/remove-inappropriate-comment/:id', (0, auth_1.auth)(client_1.UserRole.ADMIN), admin_controller_1.AdminController.removeInappropriateComment);
-router.delete('/remove-user/:id', (0, auth_1.auth)(client_1.UserRole.ADMIN), admin_controller_1.AdminController.removeUser);
 exports.AdminRoute = router;

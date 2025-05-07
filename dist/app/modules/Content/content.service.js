@@ -50,19 +50,10 @@ const createContent = (req) => __awaiter(void 0, void 0, void 0, function* () {
 });
 const getAllContent = (params, options, userId) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        console.log("Search Params:", params);
         const { searchTerm } = params, exactMatchFields = __rest(params, ["searchTerm"]);
         const { page, limit, sortBy, sortOrder, skip } = (0, content_constans_1.calculatePagination)(options);
         const conditions = [];
-<<<<<<< HEAD
-        //  Ensure searchAble field valid and defined
-        const searchableFields = ['title', 'description',
-            'director', 'cast'
-        ];
-        //* jodi searchTerm and SearchAble field ar value valid hoy thaole ata execute hobe
-=======
         const searchableFields = ['title', 'description', 'director', 'cast'];
->>>>>>> c02165ee2dfb1a0b229f093668bc3e285b1f4d94
         if (searchTerm && searchableFields.length > 0) {
             conditions.push({
                 OR: searchableFields.map((field) => ({
@@ -74,10 +65,6 @@ const getAllContent = (params, options, userId) => __awaiter(void 0, void 0, voi
             });
         }
         const numberFields = ['releaseYear', 'views'];
-<<<<<<< HEAD
-        //*  Exact match fields
-=======
->>>>>>> c02165ee2dfb1a0b229f093668bc3e285b1f4d94
         if (Object.keys(exactMatchFields).length > 0) {
             conditions.push({
                 AND: Object.entries(exactMatchFields).map(([key, value]) => {
@@ -100,10 +87,6 @@ const getAllContent = (params, options, userId) => __awaiter(void 0, void 0, voi
         const whereConditions = conditions.length > 0 ? { AND: conditions } : {};
         const validSortFields = ['createdAt', 'title'];
         const sortField = validSortFields.includes(sortBy) ? sortBy : 'createdAt';
-<<<<<<< HEAD
-        // Final query
-=======
->>>>>>> c02165ee2dfb1a0b229f093668bc3e285b1f4d94
         const result = yield prisma.video.findMany({
             where: whereConditions,
             skip,
@@ -114,11 +97,6 @@ const getAllContent = (params, options, userId) => __awaiter(void 0, void 0, voi
             include: {
                 Comment: {
                     where: {
-<<<<<<< HEAD
-                        status: {
-                            in: ['APPROVED'],
-                        },
-=======
                         OR: [
                             { status: 'APPROVED' },
                             ...(userId ? [{ userId }] : []),
@@ -144,21 +122,14 @@ const getAllContent = (params, options, userId) => __awaiter(void 0, void 0, voi
                                 select: { commentId: true },
                             }
                             : false,
->>>>>>> c02165ee2dfb1a0b229f093668bc3e285b1f4d94
                     },
                 },
                 review: {
                     where: {
-<<<<<<< HEAD
-                        status: {
-                            in: ['APPROVED'],
-                        },
-=======
                         OR: [
                             { status: 'APPROVED' },
                             ...(userId ? [{ userId }] : []),
                         ],
->>>>>>> c02165ee2dfb1a0b229f093668bc3e285b1f4d94
                     },
                 },
                 VideoTag: {
@@ -166,10 +137,6 @@ const getAllContent = (params, options, userId) => __awaiter(void 0, void 0, voi
                         tag: true,
                     },
                 },
-<<<<<<< HEAD
-            },
-        });
-=======
                 Like: userId ? {
                     where: {
                         userId: userId,
@@ -186,7 +153,6 @@ const getAllContent = (params, options, userId) => __awaiter(void 0, void 0, voi
                 video.liked = likedVideoIds.includes(video.id);
             });
         }
->>>>>>> c02165ee2dfb1a0b229f093668bc3e285b1f4d94
         const total = yield prisma.video.count({
             where: whereConditions,
         });

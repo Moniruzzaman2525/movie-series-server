@@ -135,17 +135,35 @@ const getAllContent = async (params: SearchParams, options: TPaginationOptions, 
             videoId: true,
           },
         } : undefined,
+        watchList: userId ? {
+          where: { userId },
+          select: { videoId: true },
+        } : undefined,
+
       },
     });
 
 
-    if (userId) {
-      result.forEach((video) => {
+    result.forEach((video) => {
+      const likedVideoIds = video.Like ? video.Like.map(like => like.videoId) : [];
+      const watchListVideoIds = video.watchList ? video.watchList.map(w => w.videoId) : [];
 
-        const likedVideoIds = video.Like ? video.Like.map(like => like.videoId) : [];
-        (video as any).liked = likedVideoIds.includes(video.id);
-      });
-    }
+      (video as any).liked = likedVideoIds.includes(video.id);
+      (video as any).inWatchList = watchListVideoIds.includes(video.id);
+      (video as any).totalComments = video.Comment?.length || 0;
+      const ratings = (video.review || [])
+        .map(r => r.rating)
+        .filter(r => typeof r === 'number');
+
+      const overallRating = ratings.length > 0
+        ? parseFloat((ratings.reduce((acc, r) => acc + r, 0) / ratings.length).toFixed(2))
+        : 0;
+
+      (video as any).overallRating = overallRating;
+    });
+
+
+
 
     const total = await prisma.video.count({
       where: whereConditions,
@@ -257,7 +275,7 @@ const getContentById = async (id: string, userId?: string) => {
         } : undefined,
       },
     });
-  
+
     return content;
   } catch (err) {
     throw new ApiError(httpStatus.FORBIDDEN, (err as Error).message);

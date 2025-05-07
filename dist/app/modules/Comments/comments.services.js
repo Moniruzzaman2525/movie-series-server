@@ -188,10 +188,6 @@ exports.CommentServices = {
     editComment,
     deleteComment,
     getSingleComment,
-<<<<<<< HEAD
-    getCommentByUser
-=======
     getCommentByUser,
     getCommentByContent
->>>>>>> c02165ee2dfb1a0b229f093668bc3e285b1f4d94
 };

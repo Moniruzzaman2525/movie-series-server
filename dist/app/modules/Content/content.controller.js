@@ -28,12 +28,8 @@ const createContent = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, 
     });
 }));
 const getAllContent = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-<<<<<<< HEAD
-    console.log(req.query);
-=======
     const user = req.user;
     const userId = user ? user.id : null;
->>>>>>> c02165ee2dfb1a0b229f093668bc3e285b1f4d94
     const filters = (0, content_constans_1.pick)(req.query, ['category', 'genre', "releaseYear", 'searchTerm']);
     const options = (0, content_constans_1.pick)(req.query, ['page', 'limit', 'sortBy', 'sortOrder']);
     const result = yield content_service_1.contentService.getAllContent(filters, options, userId);
