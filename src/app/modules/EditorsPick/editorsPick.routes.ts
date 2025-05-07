@@ -10,6 +10,7 @@ const router = express.Router();
 
 router.get('/', alowAuth(UserRole.USER, UserRole.ADMIN), EditorsPickController.getAllEditorPicks)
 router.post('/', auth(UserRole.ADMIN), EditorsPickController.createEditorPick)
+router.delete('/:id', auth(UserRole.ADMIN), EditorsPickController.removeEditorByPicks)
 
 
 export const EditorsPickRoutes = router;

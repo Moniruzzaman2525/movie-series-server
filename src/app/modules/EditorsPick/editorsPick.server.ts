@@ -78,7 +78,17 @@ const getAllEditorPicks = async (userId?: string) => {
 };
 
 
+const removeEditorByPicks = async (videoId: string) => {
+    const result = await prisma.editorsPick.deleteMany({
+        where: {
+            videoId: videoId
+        }
+    })
+    return result
+}
+
 export const EditorsPickServer = {
     createEditorPick,
-    getAllEditorPicks
+    getAllEditorPicks,
+    removeEditorByPicks
 }

@@ -12,6 +12,16 @@ const createEditorPick = catchAsync(async (req, res) => {
         statuscode: httpStatus.CREATED,
     });
 });
+const removeEditorByPicks = catchAsync(async (req, res) => {
+    const videoId = req.params.id
+    const result = await EditorsPickServer.removeEditorByPicks(videoId);
+    sendResponse(res, {
+        success: true,
+        message: 'Content remove editor picks successfully',
+        data: result,
+        statuscode: httpStatus.CREATED,
+    });
+});
 const getAllEditorPicks = catchAsync(async (req, res) => {
     const user = req.user
     const userId = user ? user.id : null;
@@ -26,5 +36,6 @@ const getAllEditorPicks = catchAsync(async (req, res) => {
 
 export const EditorsPickController = {
     createEditorPick,
-    getAllEditorPicks
+    getAllEditorPicks,
+    removeEditorByPicks
 };
