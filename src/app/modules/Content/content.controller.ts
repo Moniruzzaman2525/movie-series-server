@@ -43,6 +43,18 @@ const getTopRatedThisWeek = catchAsync(async (req, res) => {
     statuscode: httpStatus.OK,
   });
 });
+const getNewlyAdded = catchAsync(async (req, res) => {
+  const user = req.user
+  const userId = user ? user.id : null;
+
+  const result = await contentService.getNewlyAdded(userId);
+  sendResponse(res, {
+    success: true,
+    message: 'Content fetched successfully',
+    data: result,
+    statuscode: httpStatus.OK,
+  });
+});
 
 const updateContent = catchAsync(async (req, res) => {
   const { id } = req.params;
@@ -80,7 +92,7 @@ const getSingleContent = catchAsync(async (req, res) => {
 const contentByCategory = catchAsync(async (req, res) => {
 
   const result = await contentService.contentGetCategory();
-  console.log(result);
+
   sendResponse(res, {
     success: true,
     message: 'Content fetched successfully',
@@ -95,5 +107,6 @@ export const contentController = {
   deleteContent,
   getSingleContent,
   contentByCategory,
-  getTopRatedThisWeek
+  getTopRatedThisWeek,
+  getNewlyAdded
 };

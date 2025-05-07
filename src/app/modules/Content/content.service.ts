@@ -274,6 +274,70 @@ const getTopRatedThisWeek = async (userId?: string) => {
 };
 
 
+const getNewlyAdded = async (userId?: string) => {
+  try {
+    const videos = await prisma.video.findMany({
+      orderBy: {
+        createdAt: 'desc',
+      },
+      take: 10,
+      include: {
+        review: {
+          where: {
+            status: 'APPROVED',
+          },
+        },
+        VideoTag: {
+          select: {
+            tag: true,
+          },
+        },
+        Like: userId ? {
+          where: {
+            userId,
+          },
+          select: {
+            videoId: true,
+          },
+        } : undefined,
+        watchList: userId ? {
+          where: {
+            userId,
+          },
+          select: {
+            videoId: true,
+          },
+        } : undefined,
+      },
+    });
+
+    const processedVideos = videos.map(video => {
+      const ratings = video.review.map(r => r.rating).filter(r => typeof r === 'number');
+      const overallRating = ratings.length > 0
+        ? parseFloat((ratings.reduce((acc, r) => acc + r, 0) / ratings.length).toFixed(2))
+        : 0;
+
+      return {
+        ...video,
+        overallRating,
+        liked: video.Like?.some(l => l.videoId === video.id) ?? false,
+        inWatchList: video.watchList?.some(w => w.videoId === video.id) ?? false,
+      };
+    });
+
+    return {
+      meta: {
+        total: processedVideos.length,
+      },
+      data: processedVideos,
+    };
+
+  } catch (err) {
+    console.error("Newly Added Error:", err);
+    const error = err instanceof Error ? err : new Error('Failed to fetch newly added videos');
+    throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, error.message);
+  }
+};
 
 
 const updateContent = async (id: string, req: any) => {
@@ -419,4 +483,5 @@ export const contentService = {
   getContentById,
   contentGetCategory,
   getTopRatedThisWeek,
+  getNewlyAdded,
 };
