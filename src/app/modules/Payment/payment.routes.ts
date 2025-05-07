@@ -7,10 +7,9 @@ import { UserRole } from '@prisma/client';
 const router = express.Router();
 
 
-
 router.get('/', auth(UserRole.ADMIN, UserRole.USER), paymentController.getAllPayment)
 
-router.get('/:email', auth(UserRole.ADMIN, UserRole.USER), paymentController.getAllPaymentByUser)
+router.get('/:id', auth(UserRole.ADMIN, UserRole.USER), paymentController.getAllPaymentByUser)
 
 router.post('/', auth(UserRole.ADMIN, UserRole.USER), paymentController.payment)
 

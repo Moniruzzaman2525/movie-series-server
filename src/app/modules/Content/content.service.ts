@@ -142,8 +142,6 @@ const getAllContent = async (params: SearchParams, options: TPaginationOptions, 
 
       },
     });
-
-
     result.forEach((video) => {
       const likedVideoIds = video.Like ? video.Like.map(like => like.videoId) : [];
       const watchListVideoIds = video.watchList ? video.watchList.map(w => w.videoId) : [];

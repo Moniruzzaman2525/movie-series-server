@@ -85,11 +85,11 @@ const getAllPayment = async () => {
   }
 }
 
-const getAllPaymentByUser = async (email: string) => {
+const getAllPaymentByUser = async (id: string) => {
   try {
     const result = await prisma.payment.findMany({
       where: {
-        cus_email: email
+        userId: id
       },
       include: {
         video: true

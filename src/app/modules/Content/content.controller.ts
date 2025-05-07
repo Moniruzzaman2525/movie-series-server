@@ -20,7 +20,7 @@ const getAllContent = catchAsync(async (req, res) => {
   const userId = user ? user.id : null;
 
 
-  const filters = pick(req.query, ['category', 'genre', "releaseYear", 'searchTerm']);
+  const filters = pick(req.query, ['category', 'genre', "releaseYear", 'searchTerm','rating','streamingPlatform']);
   const options = pick(req.query, ['page', 'limit', 'sortBy', 'sortOrder']);
   const result = await contentService.getAllContent(filters, options, userId);
   sendResponse(res, {

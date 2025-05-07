@@ -10,6 +10,7 @@ import { WatchListRoutes } from '../modules/WatchList/watchList.routes';
 import { AdminRoute } from '../modules/Admin/admin.routes';
 import { paymentRouter } from '../modules/Payment/payment.routes';
 import { TagRoutes } from '../modules/Tag/tag.routes';
+import { EditorsPickRoutes } from '../modules/EditorsPick/editorsPick.routes';
 
 
 const router = express.Router();
@@ -58,6 +59,10 @@ const modulesRoute = [
   {
     path: '/tags',
     route: TagRoutes
+  },
+  {
+    path: '/editorsPick',
+    route: EditorsPickRoutes
   },
 ];
 
