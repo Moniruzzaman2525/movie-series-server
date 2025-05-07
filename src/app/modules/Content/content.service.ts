@@ -475,6 +475,70 @@ const contentGetCategory = async () => {
   }
 };
 
+const getEditorsPicks = async (userId?: string) => {
+  try {
+    const editorsPickVideos = await prisma.editorsPick.findMany({
+      take: 10,
+      orderBy: {
+        createdAt: 'desc',
+      },
+      include: {
+        video: {
+          include: {
+            review: {
+              where: { status: 'APPROVED' },
+            },
+            VideoTag: {
+              select: { tag: true },
+            },
+            Like: userId
+              ? {
+                where: { userId },
+                select: { videoId: true },
+              }
+              : undefined,
+            watchList: userId
+              ? {
+                where: { userId },
+                select: { videoId: true },
+              }
+              : undefined,
+          },
+        },
+      },
+    });
+
+    const processed = editorsPickVideos.map(entry => {
+      const video = entry.video;
+      const ratings = video.review
+        .map(r => r.rating)
+        .filter(r => typeof r === 'number');
+      const overallRating = ratings.length > 0
+        ? parseFloat((ratings.reduce((a, b) => a + b, 0) / ratings.length).toFixed(2))
+        : 0;
+
+      return {
+        ...video,
+        overallRating,
+        liked: video.Like?.some(l => l.videoId === video.id) ?? false,
+        inWatchList: video.watchList?.some(w => w.videoId === video.id) ?? false,
+      };
+    });
+
+    return {
+      meta: {
+        total: processed.length,
+      },
+      data: processed,
+    };
+  } catch (err) {
+    console.error("Editor's Picks error:", err);
+    throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, 'Failed to fetch editor’s picks');
+  }
+};
+
+
+
 export const contentService = {
   createContent,
   getAllContent,
