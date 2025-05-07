@@ -9,6 +9,7 @@ const router = express.Router();
 router.get('/category', contentController.contentByCategory);
 
 router.get('/', alowAuth(UserRole.USER, UserRole.ADMIN), contentController.getAllContent);
+router.get('/get-top-rated', alowAuth(UserRole.USER, UserRole.ADMIN), contentController.getTopRatedThisWeek);
 
 router.get('/:id', contentController.getSingleContent);
 
