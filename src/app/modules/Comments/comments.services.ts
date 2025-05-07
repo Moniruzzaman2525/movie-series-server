@@ -6,11 +6,9 @@ import { CommentStatus, ReviewStatus } from "@prisma/client";
 
 
 const addComment = async (user: any, payload: any) => {
-
     if (!user) {
         throw new ApiError(httpStatus.UNAUTHORIZED, "User is not authenticated or doesn't exist");
     }
-
     const userData = await prisma.user.findFirstOrThrow({
         where: {
             email: user.email,
@@ -54,7 +52,20 @@ const addComment = async (user: any, payload: any) => {
                 [target + "Id"]: payload[`${target}Id`],
             },
         });
-
+        
+        // const pushCommentId = await prisma.video.update({
+        //     where: {
+        //         id: result.videoId!,
+        //     },
+        //     data: {
+        //         Comment: {
+        //             connect: {
+        //                 id: result.id,
+        //             },
+        //         },
+        //     },
+        // });
+        // console.log(pushCommentId);
         return result;
     }
 
@@ -94,32 +105,35 @@ const getAllComment = async () => {
     return result;
 };
 const getCommentByContent = async (contentId: string, userId?: string) => {
-
     await prisma.video.findFirstOrThrow({
-        where: {
-            id: contentId,
-        },
+        where: { id: contentId },
     });
 
     const result = await prisma.comment.findMany({
         where: {
             videoId: contentId,
-            OR: [
-                { status: 'APPROVED' },
-                ...(userId ? [{ userId }] : []),
-            ],
+            OR: [{ status: 'APPROVED' }, ...(userId ? [{ userId }] : [])],
             parentCommentId: null,
         },
         include: {
+            _count: {
+                select: { Like: true },
+            },
             replies: {
                 where: {
-                    OR: [
-                        { status: 'APPROVED' },
-                        ...(userId ? [{ userId }] : []),
-                    ],
+                    OR: [{ status: 'APPROVED' }, ...(userId ? [{ userId }] : [])],
                 },
                 include: {
                     user: true,
+                    _count: {
+                        select: { Like: true },
+                    },
+                    Like: userId
+                        ? {
+                            where: { userId },
+                            select: { commentId: true },
+                        }
+                        : false,
                 },
             },
             user: true,
@@ -133,9 +147,26 @@ const getCommentByContent = async (contentId: string, userId?: string) => {
         orderBy: {
             createdAt: 'desc',
         },
-    })
+    });
+    result.forEach((comment: any) => {
+        comment.isLiked = comment.Like && comment.Like.length > 0;
+        comment.likes = comment._count?.Like ?? 0;
+
+        comment.replies?.forEach((reply: any) => {
+            reply.isLiked = reply.Like && reply.Like.length > 0;
+            reply.likes = reply._count?.Like ?? 0;
+
+            delete reply.Like;
+            delete reply._count;
+        });
+
+        delete comment.Like;
+        delete comment._count;
+    });
+
     return result;
 };
+
 
 const editComment = async (user: IAuthUser, commentId: string, payload: any) => {
     if (!user) {
@@ -209,7 +240,6 @@ const getSingleComment = async (commentId: string) => {
             id: commentId,
         },
     });
-
     return result;
 };
 const getCommentByUser = async (userId: string) => {

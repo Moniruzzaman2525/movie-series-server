@@ -1,13 +1,13 @@
 import config from "../../../config";
 
-     export const data = {
+      const data = {
         total_amount: 100,
         currency: 'BDT',
         tran_id: 'REF123',
-        success_url: `${config.base_url}/success`,
+        success_url: `${config.server_url}/api/v1/success`,
         fail_url:  `${config.base_url}/fail`,
         cancel_url: `${config.base_url}/cancel`,
-        ipn_url: `${config.base_url}/ipn`,
+        ipn_url: '',
         shipping_method: 'Courier',
         product_name: 'Computer.',
         product_category: 'Electronic',

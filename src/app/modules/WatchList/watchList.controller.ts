@@ -4,7 +4,7 @@ import httpStatus from 'http-status';
 import { WatchServices } from './watchList.services';
 import { IAuthUser } from '../../interface/common';
 
-const addToWatchList = catchAsync(async (req, res, next) => {
+const addToWatchList = catchAsync(async (req, res) => {
 
     const user = req.user;
     const result = await WatchServices.addToWatchList(user as IAuthUser, req.body);
@@ -15,8 +15,9 @@ const addToWatchList = catchAsync(async (req, res, next) => {
         data: result
     });
 });
-const getWatchList = catchAsync(async (req, res, next) => {
 
+
+const getWatchList = catchAsync(async (req, res) => {
     const user = req.user;
     const result = await WatchServices.getWatchList(user as IAuthUser);
     sendResponse(res, {
@@ -26,8 +27,9 @@ const getWatchList = catchAsync(async (req, res, next) => {
         data: result
     });
 });
-const removeWatchList = catchAsync(async (req, res, next) => {
 
+
+const removeWatchList = catchAsync(async (req, res) => {
     const user = req.user;
     const videoId = req.params.id
     const result = await WatchServices.removeWatchList(user as IAuthUser, videoId);
@@ -38,8 +40,6 @@ const removeWatchList = catchAsync(async (req, res, next) => {
         data: result
     });
 });
-
-
 
 export const WatchController = {
     addToWatchList,

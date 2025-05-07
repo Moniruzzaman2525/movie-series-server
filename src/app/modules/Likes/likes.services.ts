@@ -137,7 +137,7 @@ const likeComment = async (user: IAuthUser, payload: { commentId: string }) => {
             });
 
             return {
-                message: 'Successfully liked the comment', 
+                message: 'Successfully liked the comment',
             };
         }
     });

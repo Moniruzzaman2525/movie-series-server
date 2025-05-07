@@ -14,9 +14,8 @@ router.get('/:email', auth(UserRole.ADMIN, UserRole.USER), paymentController.get
 
 router.post('/', auth(UserRole.ADMIN, UserRole.USER), paymentController.payment)
 
-router.patch('/success/:tran_id', auth(UserRole.ADMIN, UserRole.USER), paymentController.successController)
+router.post('/success/:tId', paymentController.successController)
 
-
-router.delete('/failed/:tran_id', auth(UserRole.ADMIN, UserRole.USER), paymentController.failedController)
+router.delete('/payment/failed/:tId', paymentController.failedController)
 
 export const paymentRouter = router

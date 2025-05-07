@@ -75,7 +75,6 @@ const getAllComment = () => __awaiter(void 0, void 0, void 0, function* () {
     return result;
 });
 const getCommentByContent = (contentId, userId) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log(contentId);
     yield prisma_1.default.video.findFirstOrThrow({
         where: {
             id: contentId,
@@ -109,6 +108,9 @@ const getCommentByContent = (contentId, userId) => __awaiter(void 0, void 0, voi
                     select: { commentId: true },
                 }
                 : false,
+        },
+        orderBy: {
+            createdAt: 'desc',
         },
     });
     return result;

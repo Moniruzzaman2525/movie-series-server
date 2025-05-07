@@ -4,11 +4,9 @@ import prisma from "../../../helpers/prisma";
 import ApiError from "../../errors/apiError";
 import { TPaymentData } from "./payment.interface";
 const SSLCommerzPayment = require('sslcommerz-lts')
-
 const is_live = false
 const payment = async (data: Partial<TPaymentData>, user: any) => {
   const { total_amount, cus_name, cus_email, tran_id, cus_phone, cus_add1, contentId } = data;
-
   const isExist = await prisma.payment.findFirst({
     where: {
       contentId: contentId,
@@ -24,9 +22,7 @@ const payment = async (data: Partial<TPaymentData>, user: any) => {
     is_live
   );
   const apiResponse = await sslcz.init(data);
-
   const GatewayPageURL = apiResponse.GatewayPageURL;
-
   const transactionData = {
     total_amount: Number(total_amount),
     cus_name: cus_name || '',
@@ -41,7 +37,12 @@ const payment = async (data: Partial<TPaymentData>, user: any) => {
   await prisma.payment.create({
     data: transactionData,
   });
-  return GatewayPageURL;
+  return {
+    tran_id,
+    total_amount,
+    cus_name,
+    GatewayPageURL,
+  };
 };
 
 const successPayment = async (tran_id: any) => {

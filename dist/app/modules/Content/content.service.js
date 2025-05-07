@@ -145,14 +145,27 @@ const getAllContent = (params, options, userId) => __awaiter(void 0, void 0, voi
                         videoId: true,
                     },
                 } : undefined,
+                watchList: userId ? {
+                    where: { userId },
+                    select: { videoId: true },
+                } : undefined,
             },
         });
-        if (userId) {
-            result.forEach((video) => {
-                const likedVideoIds = video.Like ? video.Like.map(like => like.videoId) : [];
-                video.liked = likedVideoIds.includes(video.id);
-            });
-        }
+        result.forEach((video) => {
+            var _a;
+            const likedVideoIds = video.Like ? video.Like.map(like => like.videoId) : [];
+            const watchListVideoIds = video.watchList ? video.watchList.map(w => w.videoId) : [];
+            video.liked = likedVideoIds.includes(video.id);
+            video.inWatchList = watchListVideoIds.includes(video.id);
+            video.totalComments = ((_a = video.Comment) === null || _a === void 0 ? void 0 : _a.length) || 0;
+            const ratings = (video.review || [])
+                .map(r => r.rating)
+                .filter(r => typeof r === 'number');
+            const overallRating = ratings.length > 0
+                ? parseFloat((ratings.reduce((acc, r) => acc + r, 0) / ratings.length).toFixed(2))
+                : 0;
+            video.overallRating = overallRating;
+        });
         const total = yield prisma.video.count({
             where: whereConditions,
         });
