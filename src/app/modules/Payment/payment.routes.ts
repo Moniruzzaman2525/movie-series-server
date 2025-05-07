@@ -10,6 +10,9 @@ const router = express.Router();
 
 router.get('/', auth(UserRole.ADMIN, UserRole.USER), paymentController.getAllPayment)
 
+
+router.get('/sell-info', auth(UserRole.ADMIN), paymentController.sellInfo)
+
 router.get('/:email', auth(UserRole.ADMIN, UserRole.USER), paymentController.getAllPaymentByUser)
 
 router.post('/', auth(UserRole.ADMIN, UserRole.USER), paymentController.payment)

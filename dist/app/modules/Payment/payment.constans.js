@@ -3,16 +3,15 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.data = void 0;
 const config_1 = __importDefault(require("../../../config"));
-exports.data = {
+const data = {
     total_amount: 100,
     currency: 'BDT',
     tran_id: 'REF123',
-    success_url: `${config_1.default.base_url}/success`,
+    success_url: `${config_1.default.server_url}/api/v1/success`,
     fail_url: `${config_1.default.base_url}/fail`,
     cancel_url: `${config_1.default.base_url}/cancel`,
-    ipn_url: `${config_1.default.base_url}/ipn`,
+    ipn_url: '',
     shipping_method: 'Courier',
     product_name: 'Computer.',
     product_category: 'Electronic',

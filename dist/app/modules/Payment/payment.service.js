@@ -47,7 +47,12 @@ const payment = (data, user) => __awaiter(void 0, void 0, void 0, function* () {
     yield prisma_1.default.payment.create({
         data: transactionData,
     });
-    return GatewayPageURL;
+    return {
+        tran_id,
+        total_amount,
+        cus_name,
+        GatewayPageURL,
+    };
 });
 const successPayment = (tran_id) => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield prisma_1.default.payment.update({
@@ -102,10 +107,62 @@ const getAllPaymentByUser = (email) => __awaiter(void 0, void 0, void 0, functio
         throw new apiError_1.default(http_status_codes_1.StatusCodes.FORBIDDEN, "Something went wrong");
     }
 });
+const sellInfo = () => __awaiter(void 0, void 0, void 0, function* () {
+    const sellInfo = yield prisma_1.default.$transaction((tx) => __awaiter(void 0, void 0, void 0, function* () {
+        const totalSell = yield tx.payment.count({
+            where: {
+                paymentStatus: true
+            }
+        });
+        const total_Profit = yield tx.payment.aggregate({
+            _sum: {
+                total_amount: true
+            }
+        });
+        const total_movie_sell = yield tx.payment.aggregate({
+            where: {
+                paymentStatus: true,
+                video: {
+                    category: "MOVIE"
+                }
+            },
+            _sum: {
+                total_amount: true
+            },
+            _count: {
+                paymentStatus: true
+            }
+        });
+        const total_series_sell = yield tx.payment.aggregate({
+            where: {
+                paymentStatus: true,
+                video: {
+                    category: "SERIES"
+                }
+            },
+            _sum: {
+                total_amount: true
+            },
+            _count: {
+                paymentStatus: true
+            }
+        });
+        return {
+            totalSell: totalSell,
+            total_Profit: total_Profit._sum.total_amount,
+            total_movie_sell: total_movie_sell._sum.total_amount,
+            total_movie_sell_count: total_movie_sell._count.paymentStatus,
+            total_series_sell: total_series_sell._sum.total_amount,
+            total_series_sell_count: total_series_sell._count.paymentStatus,
+        };
+    }));
+    return sellInfo;
+});
 exports.paymentService = {
     payment,
     successPayment,
     getAllPayment,
     getAllPaymentByUser,
-    failedPayment
+    failedPayment,
+    sellInfo
 };
