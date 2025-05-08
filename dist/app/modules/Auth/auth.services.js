@@ -18,9 +18,7 @@ const jwtHelpers_1 = require("../../../helpers/jwtHelpers");
 const prisma_1 = __importDefault(require("../../../helpers/prisma"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const sendEmail_1 = require("../../../utils/sendEmail");
-const http_status_1 = __importDefault(require("http-status"));
 const apiError_1 = __importDefault(require("../../errors/apiError"));
-// import ApiError from '../../errors/ApiError';
 const loginUser = (payload) => __awaiter(void 0, void 0, void 0, function* () {
     const userData = yield prisma_1.default.user.findFirstOrThrow({
         where: {
@@ -71,7 +69,7 @@ const resetPassword = (token, payload) => __awaiter(void 0, void 0, void 0, func
     });
     const isValidToken = jwtHelpers_1.jwtHelpers.verifyToken(token, config_1.default.jwt.reset_password_secret);
     if (!isValidToken) {
-        throw new apiError_1.default(http_status_1.default.FORBIDDEN, 'You are not authorization');
+        throw new apiError_1.default(403, 'You are not authorization');
     }
     const hashPassword = yield bcrypt_1.default.hash(payload.password, 12);
     yield prisma_1.default.user.update({

@@ -17,7 +17,7 @@ const catchAsync_1 = __importDefault(require("../../../shared/catchAsync"));
 const sendResponse_1 = __importDefault(require("../../../shared/sendResponse"));
 const http_status_1 = __importDefault(require("http-status"));
 const watchList_services_1 = require("./watchList.services");
-const addToWatchList = (0, catchAsync_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+const addToWatchList = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const user = req.user;
     const result = yield watchList_services_1.WatchServices.addToWatchList(user, req.body);
     (0, sendResponse_1.default)(res, {
@@ -27,7 +27,7 @@ const addToWatchList = (0, catchAsync_1.default)((req, res, next) => __awaiter(v
         data: result
     });
 }));
-const getWatchList = (0, catchAsync_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+const getWatchList = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const user = req.user;
     const result = yield watchList_services_1.WatchServices.getWatchList(user);
     (0, sendResponse_1.default)(res, {
@@ -37,7 +37,7 @@ const getWatchList = (0, catchAsync_1.default)((req, res, next) => __awaiter(voi
         data: result
     });
 }));
-const removeWatchList = (0, catchAsync_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+const removeWatchList = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const user = req.user;
     const videoId = req.params.id;
     const result = yield watchList_services_1.WatchServices.removeWatchList(user, videoId);

@@ -99,10 +99,21 @@ const getAllPaymentByUser =catchAsync(async (req, res) => {
     });
 })
 
+const sellInfo =catchAsync(async (req, res) => {
+  const result = await paymentService.sellInfo();
+    sendResponse(res, {
+      message: "sell-info retrieved successfully",
+      data: result,
+      statuscode: StatusCodes.OK,
+      success: true,
+    });
+})
+
 export const paymentController = {
   payment,
   successController,
   getAllPayment,
   getAllPaymentByUser,
-  failedController
+  failedController,
+  sellInfo
 }

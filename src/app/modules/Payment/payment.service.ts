@@ -100,10 +100,77 @@ const getAllPaymentByUser = async (email: string) => {
     throw new ApiError(StatusCodes.FORBIDDEN, "Something went wrong")
   }
 }
+
+
+const sellInfo = async () => {
+
+  const sellInfo = await prisma.$transaction(async (tx) => {
+    const totalSell = await tx.payment.count({
+      where: {
+        paymentStatus: true
+      }
+    })
+    const total_Profit = await tx.payment.aggregate({
+      _sum: {
+        total_amount: true
+      }
+    })
+    const total_movie_sell =  await tx.payment.aggregate({
+      where:{
+        paymentStatus:true,
+        video:{
+          category:"MOVIE"
+        }
+      },
+      _sum:{
+        total_amount:true
+      },
+      _count:{
+        paymentStatus:true
+      }
+    })
+    const total_series_sell =  await tx.payment.aggregate({
+      where:{
+        paymentStatus:true,
+        video:{
+          category:"SERIES"
+        }
+      },
+      _sum:{
+        total_amount:true
+      },
+      _count: {
+        paymentStatus: true
+      }
+    })
+
+   
+
+    return {
+      totalSell: totalSell,
+      total_Profit: total_Profit._sum.total_amount,
+      total_movie_sell:total_movie_sell._sum.total_amount,
+      total_movie_sell_count:total_movie_sell._count.paymentStatus,
+      total_series_sell: total_series_sell._sum.total_amount,
+      total_series_sell_count: total_series_sell._count.paymentStatus,
+
+    }
+
+  })
+
+
+  return sellInfo
+
+}
+
+
+
+
 export const paymentService = {
   payment,
   successPayment,
   getAllPayment,
   getAllPaymentByUser,
-  failedPayment
+  failedPayment,
+  sellInfo
 }
