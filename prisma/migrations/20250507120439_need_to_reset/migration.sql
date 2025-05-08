@@ -62,6 +62,7 @@ CREATE TABLE "likes" (
     "userId" TEXT NOT NULL,
     "videoId" TEXT,
     "reviewId" TEXT,
+    "commentId" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "likes_pkey" PRIMARY KEY ("id")
@@ -78,6 +79,7 @@ CREATE TABLE "reviews" (
     "like" INTEGER DEFAULT 0,
     "hasSpoiler" BOOLEAN NOT NULL DEFAULT false,
     "status" "ReviewStatus" NOT NULL DEFAULT 'PENDING',
+    "tag" TEXT,
 
     CONSTRAINT "reviews_pkey" PRIMARY KEY ("id")
 );
@@ -108,6 +110,7 @@ CREATE TABLE "comments" (
     "status" "CommentStatus" NOT NULL DEFAULT 'PENDING',
     "content" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "like" INTEGER DEFAULT 0,
     "reviewId" TEXT,
     "parentCommentId" TEXT,
 
@@ -153,6 +156,15 @@ CREATE TABLE "video_tags" (
     CONSTRAINT "video_tags_pkey" PRIMARY KEY ("videoId","tagId")
 );
 
+-- CreateTable
+CREATE TABLE "editors_pick" (
+    "id" TEXT NOT NULL,
+    "videoId" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "editors_pick_pkey" PRIMARY KEY ("id")
+);
+
 -- CreateIndex
 CREATE UNIQUE INDEX "user_email_key" ON "user"("email");
 
@@ -161,6 +173,9 @@ CREATE UNIQUE INDEX "likes_userId_videoId_key" ON "likes"("userId", "videoId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "likes_userId_reviewId_key" ON "likes"("userId", "reviewId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "likes_userId_commentId_key" ON "likes"("userId", "commentId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "payments_tran_id_key" ON "payments"("tran_id");
@@ -179,6 +194,9 @@ ALTER TABLE "likes" ADD CONSTRAINT "likes_videoId_fkey" FOREIGN KEY ("videoId") 
 
 -- AddForeignKey
 ALTER TABLE "likes" ADD CONSTRAINT "likes_reviewId_fkey" FOREIGN KEY ("reviewId") REFERENCES "reviews"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "likes" ADD CONSTRAINT "likes_commentId_fkey" FOREIGN KEY ("commentId") REFERENCES "comments"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "reviews" ADD CONSTRAINT "reviews_userId_fkey" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -221,3 +239,6 @@ ALTER TABLE "video_tags" ADD CONSTRAINT "video_tags_videoId_fkey" FOREIGN KEY ("
 
 -- AddForeignKey
 ALTER TABLE "video_tags" ADD CONSTRAINT "video_tags_tagId_fkey" FOREIGN KEY ("tagId") REFERENCES "tags"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "editors_pick" ADD CONSTRAINT "editors_pick_videoId_fkey" FOREIGN KEY ("videoId") REFERENCES "video"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

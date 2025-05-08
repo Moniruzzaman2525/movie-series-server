@@ -98,7 +98,7 @@ const getAllPayment = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, 
 }));
 const getAllPaymentByUser = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const user = req.user;
-    const result = yield payment_service_1.paymentService.getAllPaymentByUser(user.email);
+    const result = yield payment_service_1.paymentService.getAllPaymentByUser(user.id);
     (0, sendResponse_1.default)(res, {
         message: "Payment Successful",
         data: result,

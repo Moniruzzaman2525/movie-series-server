@@ -149,6 +149,7 @@ const getAllContent = (params, options, userId) => __awaiter(void 0, void 0, voi
                     where: { userId },
                     select: { videoId: true },
                 } : undefined,
+                EditorsPick: true
             },
         });
         result.forEach((video) => {
@@ -184,7 +185,137 @@ const getAllContent = (params, options, userId) => __awaiter(void 0, void 0, voi
         throw new apiError_1.default(http_status_1.default.INTERNAL_SERVER_ERROR, error.message);
     }
 });
-//* update content
+const getTopRatedThisWeek = (userId) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const today = new Date();
+        const dayOfWeek = today.getDay();
+        const startOfWeek = new Date(today);
+        startOfWeek.setDate(today.getDate() - dayOfWeek);
+        startOfWeek.setHours(0, 0, 0, 0);
+        const videos = yield prisma.video.findMany({
+            where: {
+                review: {
+                    some: {
+                        createdAt: {
+                            gte: startOfWeek,
+                        },
+                        status: 'APPROVED',
+                    },
+                },
+            },
+            include: {
+                review: {
+                    where: {
+                        createdAt: {
+                            gte: startOfWeek,
+                        },
+                        status: 'APPROVED',
+                    },
+                },
+                VideoTag: {
+                    select: {
+                        tag: true,
+                    },
+                },
+                Like: userId ? {
+                    where: {
+                        userId,
+                    },
+                    select: {
+                        videoId: true,
+                    },
+                } : undefined,
+                watchList: userId ? {
+                    where: {
+                        userId,
+                    },
+                    select: {
+                        videoId: true,
+                    },
+                } : undefined,
+            },
+        });
+        const videoRatings = videos.map(video => {
+            var _a, _b, _c, _d;
+            const ratings = video.review.map(r => r.rating).filter(r => typeof r === 'number');
+            const averageRating = ratings.length > 0
+                ? parseFloat((ratings.reduce((acc, r) => acc + r, 0) / ratings.length).toFixed(2))
+                : 0;
+            return Object.assign(Object.assign({}, video), { overallRating: averageRating, liked: (_b = (_a = video.Like) === null || _a === void 0 ? void 0 : _a.some(l => l.videoId === video.id)) !== null && _b !== void 0 ? _b : false, inWatchList: (_d = (_c = video.watchList) === null || _c === void 0 ? void 0 : _c.some(w => w.videoId === video.id)) !== null && _d !== void 0 ? _d : false });
+        });
+        const top10Videos = videoRatings
+            .sort((a, b) => b.overallRating - a.overallRating)
+            .slice(0, 5);
+        return {
+            meta: {
+                total: top10Videos.length,
+            },
+            data: top10Videos,
+        };
+    }
+    catch (err) {
+        console.error("Top Rated This Week Error:", err);
+        const error = err instanceof Error ? err : new Error('Failed to fetch top rated videos');
+        throw new apiError_1.default(http_status_1.default.INTERNAL_SERVER_ERROR, error.message);
+    }
+});
+const getNewlyAdded = (userId) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const videos = yield prisma.video.findMany({
+            orderBy: {
+                createdAt: 'desc',
+            },
+            take: 10,
+            include: {
+                review: {
+                    where: {
+                        status: 'APPROVED',
+                    },
+                },
+                VideoTag: {
+                    select: {
+                        tag: true,
+                    },
+                },
+                Like: userId ? {
+                    where: {
+                        userId,
+                    },
+                    select: {
+                        videoId: true,
+                    },
+                } : undefined,
+                watchList: userId ? {
+                    where: {
+                        userId,
+                    },
+                    select: {
+                        videoId: true,
+                    },
+                } : undefined,
+            },
+        });
+        const processedVideos = videos.map(video => {
+            var _a, _b, _c, _d;
+            const ratings = video.review.map(r => r.rating).filter(r => typeof r === 'number');
+            const overallRating = ratings.length > 0
+                ? parseFloat((ratings.reduce((acc, r) => acc + r, 0) / ratings.length).toFixed(2))
+                : 0;
+            return Object.assign(Object.assign({}, video), { overallRating, liked: (_b = (_a = video.Like) === null || _a === void 0 ? void 0 : _a.some(l => l.videoId === video.id)) !== null && _b !== void 0 ? _b : false, inWatchList: (_d = (_c = video.watchList) === null || _c === void 0 ? void 0 : _c.some(w => w.videoId === video.id)) !== null && _d !== void 0 ? _d : false });
+        });
+        return {
+            meta: {
+                total: processedVideos.length,
+            },
+            data: processedVideos,
+        };
+    }
+    catch (err) {
+        console.error("Newly Added Error:", err);
+        const error = err instanceof Error ? err : new Error('Failed to fetch newly added videos');
+        throw new apiError_1.default(http_status_1.default.INTERNAL_SERVER_ERROR, error.message);
+    }
+});
 const updateContent = (id, req) => __awaiter(void 0, void 0, void 0, function* () {
     const file = req.file;
     if (file) {
@@ -317,4 +448,6 @@ exports.contentService = {
     deleteContent,
     getContentById,
     contentGetCategory,
+    getTopRatedThisWeek,
+    getNewlyAdded,
 };

@@ -139,11 +139,9 @@ const getAllContent = async (params: SearchParams, options: TPaginationOptions, 
           where: { userId },
           select: { videoId: true },
         } : undefined,
-
+        EditorsPick: true
       },
     });
-
-
     result.forEach((video) => {
       const likedVideoIds = video.Like ? video.Like.map(like => like.videoId) : [];
       const watchListVideoIds = video.watchList ? video.watchList.map(w => w.videoId) : [];
@@ -184,7 +182,162 @@ const getAllContent = async (params: SearchParams, options: TPaginationOptions, 
   }
 };
 
-//* update content
+
+const getTopRatedThisWeek = async (userId?: string) => {
+  try {
+
+    const today = new Date();
+    const dayOfWeek = today.getDay();
+    const startOfWeek = new Date(today);
+    startOfWeek.setDate(today.getDate() - dayOfWeek);
+    startOfWeek.setHours(0, 0, 0, 0);
+
+
+    const videos = await prisma.video.findMany({
+      where: {
+        review: {
+          some: {
+            createdAt: {
+              gte: startOfWeek,
+            },
+            status: 'APPROVED',
+          },
+        },
+      },
+      include: {
+        review: {
+          where: {
+            createdAt: {
+              gte: startOfWeek,
+            },
+            status: 'APPROVED',
+          },
+        },
+        VideoTag: {
+          select: {
+            tag: true,
+          },
+        },
+        Like: userId ? {
+          where: {
+            userId,
+          },
+          select: {
+            videoId: true,
+          },
+        } : undefined,
+        watchList: userId ? {
+          where: {
+            userId,
+          },
+          select: {
+            videoId: true,
+          },
+        } : undefined,
+
+      },
+    });
+
+
+    const videoRatings = videos.map(video => {
+      const ratings = video.review.map(r => r.rating).filter(r => typeof r === 'number');
+      const averageRating = ratings.length > 0
+        ? parseFloat((ratings.reduce((acc, r) => acc + r, 0) / ratings.length).toFixed(2))
+        : 0;
+
+      return {
+        ...video,
+        overallRating: averageRating,
+        liked: video.Like?.some(l => l.videoId === video.id) ?? false,
+        inWatchList: video.watchList?.some(w => w.videoId === video.id) ?? false,
+      };
+    });
+
+
+    const top10Videos = videoRatings
+      .sort((a, b) => b.overallRating - a.overallRating)
+      .slice(0, 5);
+
+    return {
+      meta: {
+        total: top10Videos.length,
+      },
+      data: top10Videos,
+    };
+
+  } catch (err) {
+    console.error("Top Rated This Week Error:", err);
+    const error = err instanceof Error ? err : new Error('Failed to fetch top rated videos');
+    throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, error.message);
+  }
+};
+
+
+const getNewlyAdded = async (userId?: string) => {
+  try {
+    const videos = await prisma.video.findMany({
+      orderBy: {
+        createdAt: 'desc',
+      },
+      take: 10,
+      include: {
+        review: {
+          where: {
+            status: 'APPROVED',
+          },
+        },
+        VideoTag: {
+          select: {
+            tag: true,
+          },
+        },
+        Like: userId ? {
+          where: {
+            userId,
+          },
+          select: {
+            videoId: true,
+          },
+        } : undefined,
+        watchList: userId ? {
+          where: {
+            userId,
+          },
+          select: {
+            videoId: true,
+          },
+        } : undefined,
+      },
+    });
+
+    const processedVideos = videos.map(video => {
+      const ratings = video.review.map(r => r.rating).filter(r => typeof r === 'number');
+      const overallRating = ratings.length > 0
+        ? parseFloat((ratings.reduce((acc, r) => acc + r, 0) / ratings.length).toFixed(2))
+        : 0;
+
+      return {
+        ...video,
+        overallRating,
+        liked: video.Like?.some(l => l.videoId === video.id) ?? false,
+        inWatchList: video.watchList?.some(w => w.videoId === video.id) ?? false,
+      };
+    });
+
+    return {
+      meta: {
+        total: processedVideos.length,
+      },
+      data: processedVideos,
+    };
+
+  } catch (err) {
+    console.error("Newly Added Error:", err);
+    const error = err instanceof Error ? err : new Error('Failed to fetch newly added videos');
+    throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, error.message);
+  }
+};
+
 
 const updateContent = async (id: string, req: any) => {
   const file = req.file;
@@ -321,6 +474,9 @@ const contentGetCategory = async () => {
   }
 };
 
+
+
+
 export const contentService = {
   createContent,
   getAllContent,
@@ -328,4 +484,6 @@ export const contentService = {
   deleteContent,
   getContentById,
   contentGetCategory,
+  getTopRatedThisWeek,
+  getNewlyAdded,
 };

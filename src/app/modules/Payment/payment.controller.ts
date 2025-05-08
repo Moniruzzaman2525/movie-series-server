@@ -90,7 +90,7 @@ const getAllPayment =catchAsync(async (req, res) => {
 
 const getAllPaymentByUser =catchAsync(async (req, res) => {
   const user=req.user
-  const result = await paymentService.getAllPaymentByUser(user.email);
+  const result = await paymentService.getAllPaymentByUser(user.id);
     sendResponse(res, {
       message: "Payment Successful",
       data: result,

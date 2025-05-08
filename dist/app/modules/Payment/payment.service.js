@@ -91,11 +91,11 @@ const getAllPayment = () => __awaiter(void 0, void 0, void 0, function* () {
         throw new apiError_1.default(http_status_codes_1.StatusCodes.FORBIDDEN, "Something went wrong");
     }
 });
-const getAllPaymentByUser = (email) => __awaiter(void 0, void 0, void 0, function* () {
+const getAllPaymentByUser = (id) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const result = yield prisma_1.default.payment.findMany({
             where: {
-                cus_email: email
+                userId: id
             },
             include: {
                 video: true
