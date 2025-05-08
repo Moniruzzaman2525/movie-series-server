@@ -33,8 +33,8 @@ const forgetPassword = (0, catchAsync_1.default)((req, res, next) => __awaiter(v
     (0, sendResponse_1.default)(res, {
         statuscode: http_status_1.default.OK,
         success: true,
-        message: 'A password reset link has been sent to your email. Please check your inbox.',
-        data: result,
+        message: "A password reset link has been sent to your email. Please check your inbox.",
+        data: result
     });
 }));
 const resetPassword = (0, catchAsync_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {

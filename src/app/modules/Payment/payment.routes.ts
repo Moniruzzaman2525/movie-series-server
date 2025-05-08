@@ -9,7 +9,14 @@ const router = express.Router();
 
 router.get('/', auth(UserRole.ADMIN, UserRole.USER), paymentController.getAllPayment)
 
+<<<<<<< HEAD
 router.get('/:id', auth(UserRole.ADMIN, UserRole.USER), paymentController.getAllPaymentByUser)
+=======
+
+router.get('/sell-info', auth(UserRole.ADMIN), paymentController.sellInfo)
+
+router.get('/:email', auth(UserRole.ADMIN, UserRole.USER), paymentController.getAllPaymentByUser)
+>>>>>>> 670350526a40f305525090a38c8716b6aab6dd0e
 
 router.post('/', auth(UserRole.ADMIN, UserRole.USER), paymentController.payment)
 

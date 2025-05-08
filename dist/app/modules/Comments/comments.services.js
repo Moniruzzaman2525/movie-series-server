@@ -52,6 +52,19 @@ const addComment = (user, payload) => __awaiter(void 0, void 0, void 0, function
         const result = yield prisma_1.default.comment.create({
             data: Object.assign(Object.assign({}, payload), { userId: userData.id, [target + "Id"]: payload[`${target}Id`] }),
         });
+        // const pushCommentId = await prisma.video.update({
+        //     where: {
+        //         id: result.videoId!,
+        //     },
+        //     data: {
+        //         Comment: {
+        //             connect: {
+        //                 id: result.id,
+        //             },
+        //         },
+        //     },
+        // });
+        // console.log(pushCommentId);
         return result;
     }
     const parentComment = yield prisma_1.default.comment.findUnique({
@@ -75,31 +88,34 @@ const getAllComment = () => __awaiter(void 0, void 0, void 0, function* () {
     return result;
 });
 const getCommentByContent = (contentId, userId) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log(contentId);
     yield prisma_1.default.video.findFirstOrThrow({
-        where: {
-            id: contentId,
-        },
+        where: { id: contentId },
     });
     const result = yield prisma_1.default.comment.findMany({
         where: {
             videoId: contentId,
-            OR: [
-                { status: 'APPROVED' },
-                ...(userId ? [{ userId }] : []),
-            ],
+            OR: [{ status: 'APPROVED' }, ...(userId ? [{ userId }] : [])],
             parentCommentId: null,
         },
         include: {
+            _count: {
+                select: { Like: true },
+            },
             replies: {
                 where: {
-                    OR: [
-                        { status: 'APPROVED' },
-                        ...(userId ? [{ userId }] : []),
-                    ],
+                    OR: [{ status: 'APPROVED' }, ...(userId ? [{ userId }] : [])],
                 },
                 include: {
                     user: true,
+                    _count: {
+                        select: { Like: true },
+                    },
+                    Like: userId
+                        ? {
+                            where: { userId },
+                            select: { commentId: true },
+                        }
+                        : false,
                 },
             },
             user: true,
@@ -110,6 +126,23 @@ const getCommentByContent = (contentId, userId) => __awaiter(void 0, void 0, voi
                 }
                 : false,
         },
+        orderBy: {
+            createdAt: 'desc',
+        },
+    });
+    result.forEach((comment) => {
+        var _a, _b, _c;
+        comment.isLiked = comment.Like && comment.Like.length > 0;
+        comment.likes = (_b = (_a = comment._count) === null || _a === void 0 ? void 0 : _a.Like) !== null && _b !== void 0 ? _b : 0;
+        (_c = comment.replies) === null || _c === void 0 ? void 0 : _c.forEach((reply) => {
+            var _a, _b;
+            reply.isLiked = reply.Like && reply.Like.length > 0;
+            reply.likes = (_b = (_a = reply._count) === null || _a === void 0 ? void 0 : _a.Like) !== null && _b !== void 0 ? _b : 0;
+            delete reply.Like;
+            delete reply._count;
+        });
+        delete comment.Like;
+        delete comment._count;
     });
     return result;
 });
