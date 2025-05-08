@@ -30,9 +30,31 @@ const createContent = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, 
 const getAllContent = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const user = req.user;
     const userId = user ? user.id : null;
-    const filters = (0, content_constans_1.pick)(req.query, ['category', 'genre', "releaseYear", 'searchTerm']);
+    const filters = (0, content_constans_1.pick)(req.query, ['category', 'genre', "releaseYear", 'searchTerm', 'rating', 'streamingPlatform']);
     const options = (0, content_constans_1.pick)(req.query, ['page', 'limit', 'sortBy', 'sortOrder']);
     const result = yield content_service_1.contentService.getAllContent(filters, options, userId);
+    (0, sendResponse_1.default)(res, {
+        success: true,
+        message: 'Content fetched successfully',
+        data: result,
+        statuscode: http_status_1.default.OK,
+    });
+}));
+const getTopRatedThisWeek = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const user = req.user;
+    const userId = user ? user.id : null;
+    const result = yield content_service_1.contentService.getTopRatedThisWeek(userId);
+    (0, sendResponse_1.default)(res, {
+        success: true,
+        message: 'Content fetched successfully',
+        data: result,
+        statuscode: http_status_1.default.OK,
+    });
+}));
+const getNewlyAdded = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const user = req.user;
+    const userId = user ? user.id : null;
+    const result = yield content_service_1.contentService.getNewlyAdded(userId);
     (0, sendResponse_1.default)(res, {
         success: true,
         message: 'Content fetched successfully',
@@ -72,7 +94,6 @@ const getSingleContent = (0, catchAsync_1.default)((req, res) => __awaiter(void 
 }));
 const contentByCategory = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield content_service_1.contentService.contentGetCategory();
-    console.log(result);
     (0, sendResponse_1.default)(res, {
         success: true,
         message: 'Content fetched successfully',
@@ -87,4 +108,6 @@ exports.contentController = {
     deleteContent,
     getSingleContent,
     contentByCategory,
+    getTopRatedThisWeek,
+    getNewlyAdded
 };

@@ -13,6 +13,8 @@ const alowAuth_1 = __importDefault(require("../../middlewares/alowAuth"));
 const router = express_1.default.Router();
 router.get('/category', content_controller_1.contentController.contentByCategory);
 router.get('/', (0, alowAuth_1.default)(client_1.UserRole.USER, client_1.UserRole.ADMIN), content_controller_1.contentController.getAllContent);
+router.get('/get-top-rated', (0, alowAuth_1.default)(client_1.UserRole.USER, client_1.UserRole.ADMIN), content_controller_1.contentController.getTopRatedThisWeek);
+router.get('/get-newly-added', (0, alowAuth_1.default)(client_1.UserRole.USER, client_1.UserRole.ADMIN), content_controller_1.contentController.getNewlyAdded);
 router.get('/:id', content_controller_1.contentController.getSingleContent);
 router.post('/', utils_1.upload.single('file'), (0, auth_1.auth)(client_1.UserRole.ADMIN), (req, res, next) => {
     req.body = JSON.parse(req.body.data);

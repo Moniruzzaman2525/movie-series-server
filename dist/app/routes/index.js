@@ -15,6 +15,7 @@ const watchList_routes_1 = require("../modules/WatchList/watchList.routes");
 const admin_routes_1 = require("../modules/Admin/admin.routes");
 const payment_routes_1 = require("../modules/Payment/payment.routes");
 const tag_routes_1 = require("../modules/Tag/tag.routes");
+const editorsPick_routes_1 = require("../modules/EditorsPick/editorsPick.routes");
 const router = express_1.default.Router();
 const modulesRoute = [
     {
@@ -60,6 +61,10 @@ const modulesRoute = [
     {
         path: '/tags',
         route: tag_routes_1.TagRoutes
+    },
+    {
+        path: '/editorsPick',
+        route: editorsPick_routes_1.EditorsPickRoutes
     },
 ];
 modulesRoute.forEach((route) => {
