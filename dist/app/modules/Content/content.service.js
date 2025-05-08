@@ -131,6 +131,9 @@ const getAllContent = (params, options, userId) => __awaiter(void 0, void 0, voi
                             ...(userId ? [{ userId }] : []),
                         ],
                     },
+                    include: {
+                        user: true
+                    }
                 },
                 VideoTag: {
                     select: {
@@ -386,6 +389,9 @@ const getContentById = (id, userId) => __awaiter(void 0, void 0, void 0, functio
                             ...(userId ? [{ userId }] : []),
                         ],
                     },
+                    include: {
+                        user: true
+                    }
                 },
                 VideoTag: {
                     select: {

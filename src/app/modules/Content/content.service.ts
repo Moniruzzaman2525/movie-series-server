@@ -120,6 +120,9 @@ const getAllContent = async (params: SearchParams, options: TPaginationOptions, 
               ...(userId ? [{ userId }] : []),
             ],
           },
+          include:{
+            user:true
+          }
         },
         VideoTag: {
           select: {
@@ -411,6 +414,9 @@ const getContentById = async (id: string, userId?: string) => {
               ...(userId ? [{ userId }] : []),
             ],
           },
+          include:{
+            user:true
+          }
         },
         VideoTag: {
           select: {

@@ -215,6 +215,25 @@ const getCommentByUser = (userId) => __awaiter(void 0, void 0, void 0, function*
     });
     return result;
 });
+const getCommentByReviewId = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    const isExist = yield prisma_1.default.comment.findFirst({
+        where: {
+            reviewId: id
+        }
+    });
+    if (!isExist) {
+        throw new apiError_1.default(http_status_1.default.NOT_FOUND, 'Reply not found');
+    }
+    const result = yield prisma_1.default.comment.findMany({
+        where: {
+            reviewId: id,
+        },
+        include: {
+            user: true
+        }
+    });
+    return result;
+});
 exports.CommentServices = {
     addComment,
     getAllComment,
@@ -222,5 +241,6 @@ exports.CommentServices = {
     deleteComment,
     getSingleComment,
     getCommentByUser,
-    getCommentByContent
+    getCommentByContent,
+    getCommentByReviewId
 };

@@ -8,7 +8,12 @@ const router = express.Router();
 router.get('/', auth(UserRole.USER, UserRole.ADMIN), ReviewController.getReview);
 router.post('/', auth(UserRole.USER, UserRole.ADMIN), ReviewController.addReview);
 router.patch('/edit-review/:id', auth(UserRole.USER, UserRole.ADMIN), ReviewController.editReview);
+
 router.delete('/delete-review/:id', auth(UserRole.USER, UserRole.ADMIN), ReviewController.deleteReview);
+
 router.get('/:id', auth(UserRole.USER, UserRole.ADMIN), ReviewController.getSingleReview);
+
+
+router.get('/get-reviews-by-user/:id', auth(UserRole.USER, UserRole.ADMIN), ReviewController.getReviewByUser);
 
 export const ReviewRoutes = router;

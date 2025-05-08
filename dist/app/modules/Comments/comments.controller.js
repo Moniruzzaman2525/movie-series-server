@@ -90,6 +90,17 @@ const getCommentByUser = (0, catchAsync_1.default)((req, res, next) => __awaiter
         data: result,
     });
 }));
+const getCommentByReviewId = (0, catchAsync_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const { reviewId } = req.params;
+    console.log(reviewId);
+    const result = yield comments_services_1.CommentServices.getCommentByReviewId(reviewId);
+    (0, sendResponse_1.default)(res, {
+        statuscode: http_status_1.default.OK,
+        success: true,
+        message: 'Comment fetched successfully',
+        data: result,
+    });
+}));
 exports.CommentController = {
     addComments,
     getAllComment,
@@ -98,4 +109,5 @@ exports.CommentController = {
     getSingleComment,
     getCommentByUser,
     getCommentByContent,
+    getCommentByReviewId,
 };

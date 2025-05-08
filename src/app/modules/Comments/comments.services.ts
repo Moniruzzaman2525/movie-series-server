@@ -252,6 +252,27 @@ const getCommentByUser = async (userId: string) => {
 
     return result;
 }
+
+const getCommentByReviewId=async(id:string)=>{
+    const isExist=await prisma.comment.findFirst({
+        where:{
+            reviewId:id
+        }
+    })
+    if(!isExist){
+        throw new ApiError(httpStatus.NOT_FOUND,'Reply not found')
+    }
+    const result = await prisma.comment.findMany({
+        where: {
+            reviewId: id,
+        },
+        include:{
+            user:true
+        }
+    }
+    );
+    return result;
+}
 export const CommentServices = {
     addComment,
     getAllComment,
@@ -259,5 +280,6 @@ export const CommentServices = {
     deleteComment,
     getSingleComment,
     getCommentByUser,
-    getCommentByContent
+    getCommentByContent,
+    getCommentByReviewId
 }

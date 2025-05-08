@@ -66,6 +66,7 @@ const editReview = async (user: IAuthUser, reviewId: string, payload: any) => {
 };
 
 const deleteReview = async (user: IAuthUser, reviewId: string) => {
+  console.log(reviewId);
   if (!user) {
     throw new ApiError(httpStatus.UNAUTHORIZED, 'User is not authenticated');
   }
@@ -112,9 +113,27 @@ const getSingleReview = async (reviewId: string) => {
   return result;
 };
 
-const getReview = async () => {
 
-  const result = await prisma.review.findMany()
+const getReviewByUser= async (userId: string) => {
+  const result = await prisma.review.findMany({
+    where: {
+      userId: userId,
+    },
+    include: {
+      user: true,
+      video: true,
+    }
+  });
+
+  return result;
+}
+const getReview = async () => {
+  const result = await prisma.review.findMany({
+    include:{
+      user: true,
+      video: true,
+    }
+  })
 
   return result;
 };
@@ -124,5 +143,6 @@ export const ReviewServices = {
   editReview,
   deleteReview,
   getSingleReview,
-  getReview
+  getReview,
+  getReviewByUser,
 };

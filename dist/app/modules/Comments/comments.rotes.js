@@ -11,6 +11,7 @@ const comments_controller_1 = require("./comments.controller");
 const router = express_1.default.Router();
 router.get('/', (0, auth_1.auth)(client_1.UserRole.USER, client_1.UserRole.ADMIN), comments_controller_1.CommentController.getAllComment);
 router.post('/', (0, auth_1.auth)(client_1.UserRole.USER, client_1.UserRole.ADMIN), comments_controller_1.CommentController.addComments);
+router.get("/:reviewId", comments_controller_1.CommentController.getCommentByReviewId);
 router.patch('/edit-comment/:id', (0, auth_1.auth)(client_1.UserRole.USER, client_1.UserRole.ADMIN), comments_controller_1.CommentController.editComment);
 router.delete('/delete-comment/:id', (0, auth_1.auth)(client_1.UserRole.USER, client_1.UserRole.ADMIN), comments_controller_1.CommentController.deleteComment);
 router.get('/:id', (0, auth_1.auth)(client_1.UserRole.USER, client_1.UserRole.ADMIN), comments_controller_1.CommentController.getSingleComment);
