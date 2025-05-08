@@ -65,6 +65,7 @@ const editReview = (user, reviewId, payload) => __awaiter(void 0, void 0, void 0
     return result;
 });
 const deleteReview = (user, reviewId) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log(reviewId);
     if (!user) {
         throw new apiError_1.default(http_status_1.default.UNAUTHORIZED, 'User is not authenticated');
     }
@@ -102,8 +103,25 @@ const getSingleReview = (reviewId) => __awaiter(void 0, void 0, void 0, function
     });
     return result;
 });
+const getReviewByUser = (userId) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield prisma_1.default.review.findMany({
+        where: {
+            userId: userId,
+        },
+        include: {
+            user: true,
+            video: true,
+        }
+    });
+    return result;
+});
 const getReview = () => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield prisma_1.default.review.findMany();
+    const result = yield prisma_1.default.review.findMany({
+        include: {
+            user: true,
+            video: true,
+        }
+    });
     return result;
 });
 exports.ReviewServices = {
@@ -111,5 +129,6 @@ exports.ReviewServices = {
     editReview,
     deleteReview,
     getSingleReview,
-    getReview
+    getReview,
+    getReviewByUser,
 };

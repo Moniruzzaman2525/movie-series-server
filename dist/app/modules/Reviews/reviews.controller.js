@@ -41,6 +41,7 @@ const editReview = (0, catchAsync_1.default)((req, res, next) => __awaiter(void 
 const deleteReview = (0, catchAsync_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const user = req.user;
     const reviewId = req.params.id;
+    console.log(reviewId);
     const result = yield reviews_services_1.ReviewServices.deleteReview(user, reviewId);
     (0, sendResponse_1.default)(res, {
         statuscode: http_status_1.default.OK,
@@ -68,10 +69,21 @@ const getReview = (0, catchAsync_1.default)((req, res, next) => __awaiter(void 0
         data: result,
     });
 }));
+const getReviewByUser = (0, catchAsync_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id } = req.params;
+    const result = yield reviews_services_1.ReviewServices.getReviewByUser(id);
+    (0, sendResponse_1.default)(res, {
+        statuscode: http_status_1.default.OK,
+        success: true,
+        message: 'Review fetched successfully',
+        data: result,
+    });
+}));
 exports.ReviewController = {
     addReview,
     editReview,
     deleteReview,
     getSingleReview,
-    getReview
+    getReview,
+    getReviewByUser
 };

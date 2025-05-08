@@ -30,6 +30,7 @@ const editReview = catchAsync(async (req, res, next) => {
 const deleteReview = catchAsync(async (req, res, next) => {
   const user = req.user;
   const reviewId = req.params.id;
+  console.log(reviewId);
   const result = await ReviewServices.deleteReview(user as IAuthUser, reviewId);
   sendResponse(res, {
     statuscode: httpStatus.OK,
@@ -60,10 +61,22 @@ const getReview = catchAsync(async (req, res, next) => {
   });
 });
 
+
+const getReviewByUser = catchAsync(async (req, res, next) => {
+ const {id}=req.params
+  const result = await ReviewServices.getReviewByUser(id);
+  sendResponse(res, {
+    statuscode: httpStatus.OK,
+    success: true,
+    message: 'Review fetched successfully',
+    data: result,
+  });
+})
 export const ReviewController = {
   addReview,
   editReview,
   deleteReview,
   getSingleReview,
-  getReview
+  getReview,
+  getReviewByUser
 };

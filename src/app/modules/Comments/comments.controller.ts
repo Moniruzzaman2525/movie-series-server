@@ -83,6 +83,18 @@ const getCommentByUser = catchAsync(async (req, res, next) => {
         data: result,
     });
 })
+
+const getCommentByReviewId = catchAsync(async (req, res, next) => {
+    const { reviewId } = req.params
+    console.log(reviewId);
+    const result = await CommentServices.getCommentByReviewId(reviewId);
+    sendResponse(res, {
+        statuscode: httpStatus.OK,
+        success: true,
+        message: 'Comment fetched successfully',
+        data: result,
+    });
+})
 export const CommentController = {
     addComments,
     getAllComment,
@@ -91,4 +103,5 @@ export const CommentController = {
     getSingleComment,
     getCommentByUser,
     getCommentByContent,
+    getCommentByReviewId,
 };
