@@ -25,7 +25,6 @@ const payment = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0
     const { tID } = req.params;
     const { amount, contentId } = req.body;
     const tran_id = (0, uuid_1.v4)();
-    console.log(tID);
     const data = {
         total_amount: amount,
         currency: 'BDT',
@@ -106,6 +105,26 @@ const getAllPaymentByUser = (0, catchAsync_1.default)((req, res) => __awaiter(vo
         success: true,
     });
 }));
+const updateAdminStatus = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id } = req.params;
+    const result = yield payment_service_1.paymentService.updateAdminStatus(id);
+    (0, sendResponse_1.default)(res, {
+        message: "Payment Approved",
+        data: result,
+        statuscode: http_status_codes_1.StatusCodes.OK,
+        success: true
+    });
+}));
+const rejectPayment = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { paymentId } = req.params;
+    const result = yield payment_service_1.paymentService.rejectPayment(paymentId);
+    (0, sendResponse_1.default)(res, {
+        message: "Payment Rejected",
+        data: result,
+        statuscode: http_status_codes_1.StatusCodes.OK,
+        success: true
+    });
+}));
 const sellInfo = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield payment_service_1.paymentService.sellInfo();
     (0, sendResponse_1.default)(res, {
@@ -121,5 +140,7 @@ exports.paymentController = {
     getAllPayment,
     getAllPaymentByUser,
     failedController,
+    updateAdminStatus,
+    rejectPayment,
     sellInfo
 };

@@ -13,7 +13,6 @@ router.delete('/delete-review/:id', auth(UserRole.USER, UserRole.ADMIN), ReviewC
 
 router.get('/:id', auth(UserRole.USER, UserRole.ADMIN), ReviewController.getSingleReview);
 
-
 router.get('/get-reviews-by-user/:id', auth(UserRole.USER, UserRole.ADMIN), ReviewController.getReviewByUser);
 
 export const ReviewRoutes = router;

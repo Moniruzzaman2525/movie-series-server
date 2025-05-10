@@ -62,6 +62,7 @@ const editComment = (0, catchAsync_1.default)((req, res, next) => __awaiter(void
 const deleteComment = (0, catchAsync_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const user = req.user;
     const commentId = req.params.id;
+    console.log(commentId);
     const result = yield comments_services_1.CommentServices.deleteComment(user, commentId);
     (0, sendResponse_1.default)(res, {
         statuscode: http_status_1.default.OK,

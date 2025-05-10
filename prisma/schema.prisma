@@ -39,6 +39,7 @@ model Video {
   category          Category
   cast              String
   streamingPlatform String
+  streamingLink      String?
   description       String
   like              Int?          @default(0)
   price             Float
@@ -114,6 +115,7 @@ model Payment {
   cus_phone     String
   cus_add1      String
   paymentStatus Boolean  @default(false)
+  adminStatus Boolean @default(false)
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
   userId        String

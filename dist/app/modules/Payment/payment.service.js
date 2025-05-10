@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.paymentService = void 0;
+exports.paymentService = exports.updateAdminStatus = void 0;
 const http_status_codes_1 = require("http-status-codes");
 const config_1 = __importDefault(require("../../../config"));
 const prisma_1 = __importDefault(require("../../../helpers/prisma"));
@@ -43,6 +43,7 @@ const payment = (data, user) => __awaiter(void 0, void 0, void 0, function* () {
         userId: user.id,
         contentId: contentId || '',
         paymentStatus: false,
+        adminStatus: false
     };
     yield prisma_1.default.payment.create({
         data: transactionData,
@@ -107,6 +108,41 @@ const getAllPaymentByUser = (id) => __awaiter(void 0, void 0, void 0, function* 
         throw new apiError_1.default(http_status_codes_1.StatusCodes.FORBIDDEN, "Something went wrong");
     }
 });
+const updateAdminStatus = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    const isExist = yield prisma_1.default.payment.findFirst({
+        where: {
+            id: id
+        }
+    });
+    if (!isExist) {
+        throw new apiError_1.default(http_status_codes_1.StatusCodes.FORBIDDEN, "Payment not found");
+    }
+    const result = yield prisma_1.default.payment.update({
+        where: {
+            id: id
+        },
+        data: {
+            adminStatus: true
+        }
+    });
+    return result;
+});
+exports.updateAdminStatus = updateAdminStatus;
+const rejectPayment = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    const isExist = yield prisma_1.default.payment.findFirst({
+        where: {
+            id: id
+        }
+    });
+    if (!isExist) {
+        throw new apiError_1.default(http_status_codes_1.StatusCodes.FORBIDDEN, "Payment not found");
+    }
+    const result = yield prisma_1.default.payment.delete({
+        where: {
+            id: id
+        }
+    });
+});
 const sellInfo = () => __awaiter(void 0, void 0, void 0, function* () {
     const sellInfo = yield prisma_1.default.$transaction((tx) => __awaiter(void 0, void 0, void 0, function* () {
         const totalSell = yield tx.payment.count({
@@ -164,5 +200,7 @@ exports.paymentService = {
     getAllPayment,
     getAllPaymentByUser,
     failedPayment,
+    updateAdminStatus: exports.updateAdminStatus,
+    rejectPayment,
     sellInfo
 };
