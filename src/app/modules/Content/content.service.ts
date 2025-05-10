@@ -16,8 +16,6 @@ const createContent = async (req: any) => {
       const uploadImage = await uploadToCloudinary(file);
       req.body.thumbnailImage = uploadImage.secure_url;
     }
-
-    console.log(req.body)
     const content = await prisma.video.create({
       data: {
         ...req.body,
@@ -120,8 +118,8 @@ const getAllContent = async (params: SearchParams, options: TPaginationOptions, 
               ...(userId ? [{ userId }] : []),
             ],
           },
-          include:{
-            user:true
+          include: {
+            user: true
           }
         },
         VideoTag: {
@@ -196,8 +194,9 @@ const getTopRatedThisWeek = async (userId?: string) => {
     startOfWeek.setHours(0, 0, 0, 0);
 
 
-    const videos = await prisma.video.findMany({
+    const result = await prisma.video.findMany({
       where: {
+
         review: {
           some: {
             createdAt: {
@@ -208,6 +207,35 @@ const getTopRatedThisWeek = async (userId?: string) => {
         },
       },
       include: {
+        Comment: {
+          where: {
+            OR: [
+              { status: 'APPROVED' },
+              ...(userId ? [{ userId }] : []),
+            ],
+            parentCommentId: null,
+          },
+          include: {
+            replies: {
+              where: {
+                OR: [
+                  { status: 'APPROVED' },
+                  ...(userId ? [{ userId }] : []),
+                ],
+              },
+              include: {
+                user: true,
+              },
+            },
+            user: true,
+            Like: userId
+              ? {
+                where: { userId },
+                select: { commentId: true },
+              }
+              : false,
+          },
+        },
         review: {
           where: {
             createdAt: {
@@ -242,31 +270,26 @@ const getTopRatedThisWeek = async (userId?: string) => {
     });
 
 
-    const videoRatings = videos.map(video => {
-      const ratings = video.review.map(r => r.rating).filter(r => typeof r === 'number');
-      const averageRating = ratings.length > 0
+    result.forEach((video) => {
+      const likedVideoIds = video.Like ? video.Like.map(like => like.videoId) : [];
+      const watchListVideoIds = video.watchList ? video.watchList.map(w => w.videoId) : [];
+
+      (video as any).liked = likedVideoIds.includes(video.id);
+      (video as any).inWatchList = watchListVideoIds.includes(video.id);
+      (video as any).totalComments = video.Comment?.length || 0;
+      const ratings = (video.review || [])
+        .map(r => r.rating)
+        .filter(r => typeof r === 'number');
+
+      const overallRating = ratings.length > 0
         ? parseFloat((ratings.reduce((acc, r) => acc + r, 0) / ratings.length).toFixed(2))
         : 0;
 
-      return {
-        ...video,
-        overallRating: averageRating,
-        liked: video.Like?.some(l => l.videoId === video.id) ?? false,
-        inWatchList: video.watchList?.some(w => w.videoId === video.id) ?? false,
-      };
+      (video as any).overallRating = overallRating;
     });
 
 
-    const top10Videos = videoRatings
-      .sort((a, b) => b.overallRating - a.overallRating)
-      .slice(0, 5);
-
-    return {
-      meta: {
-        total: top10Videos.length,
-      },
-      data: top10Videos,
-    };
+    return result
 
   } catch (err) {
     console.error("Top Rated This Week Error:", err);
@@ -278,61 +301,95 @@ const getTopRatedThisWeek = async (userId?: string) => {
 
 const getNewlyAdded = async (userId?: string) => {
   try {
-    const videos = await prisma.video.findMany({
+    const result = await prisma.video.findMany({
       orderBy: {
         createdAt: 'desc',
       },
       take: 10,
       include: {
+        Comment: {
+          where: {
+            OR: [
+              { status: 'APPROVED' },
+              ...(userId ? [{ userId }] : []),
+            ],
+            parentCommentId: null,
+          },
+          include: {
+            replies: {
+              where: {
+                OR: [
+                  { status: 'APPROVED' },
+                  ...(userId ? [{ userId }] : []),
+                ],
+              },
+              include: {
+                user: true,
+              },
+            },
+            user: true,
+            Like: userId
+              ? {
+                where: { userId },
+                select: { commentId: true },
+              }
+              : false,
+          },
+        },
+
         review: {
           where: {
-            status: 'APPROVED',
+            OR: [
+              { status: 'APPROVED' },
+              ...(userId ? [{ userId }] : []),
+            ],
           },
+          include: {
+            user: true
+          }
         },
         VideoTag: {
           select: {
             tag: true,
           },
         },
+
         Like: userId ? {
           where: {
-            userId,
+            userId: userId,
           },
           select: {
             videoId: true,
           },
         } : undefined,
         watchList: userId ? {
-          where: {
-            userId,
-          },
-          select: {
-            videoId: true,
-          },
+          where: { userId },
+          select: { videoId: true },
         } : undefined,
+        EditorsPick: true
       },
     });
 
-    const processedVideos = videos.map(video => {
-      const ratings = video.review.map(r => r.rating).filter(r => typeof r === 'number');
+    result.forEach((video) => {
+      const likedVideoIds = video.Like ? video.Like.map(like => like.videoId) : [];
+      const watchListVideoIds = video.watchList ? video.watchList.map(w => w.videoId) : [];
+
+      (video as any).liked = likedVideoIds.includes(video.id);
+      (video as any).inWatchList = watchListVideoIds.includes(video.id);
+      (video as any).totalComments = video.Comment?.length || 0;
+      const ratings = (video.review || [])
+        .map(r => r.rating)
+        .filter(r => typeof r === 'number');
+
       const overallRating = ratings.length > 0
         ? parseFloat((ratings.reduce((acc, r) => acc + r, 0) / ratings.length).toFixed(2))
         : 0;
 
-      return {
-        ...video,
-        overallRating,
-        liked: video.Like?.some(l => l.videoId === video.id) ?? false,
-        inWatchList: video.watchList?.some(w => w.videoId === video.id) ?? false,
-      };
+      (video as any).overallRating = overallRating;
     });
 
-    return {
-      meta: {
-        total: processedVideos.length,
-      },
-      data: processedVideos,
-    };
+
+    return result
 
   } catch (err) {
     console.error("Newly Added Error:", err);
@@ -414,8 +471,8 @@ const getContentById = async (id: string, userId?: string) => {
               ...(userId ? [{ userId }] : []),
             ],
           },
-          include:{
-            user:true
+          include: {
+            user: true
           }
         },
         VideoTag: {
