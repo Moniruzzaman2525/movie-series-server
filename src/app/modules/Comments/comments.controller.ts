@@ -41,6 +41,7 @@ const getCommentByContent = catchAsync(async (req, res, next) => {
 const editComment = catchAsync(async (req, res, next) => {
     const user = req.user;
     const commentId = req.params.id;
+
     const result = await CommentServices.editComment(user as IAuthUser, commentId, req.body);
     sendResponse(res, {
         statuscode: httpStatus.OK,

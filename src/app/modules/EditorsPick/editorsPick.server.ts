@@ -18,8 +18,6 @@ const createEditorPick = async (payload: any) => {
 }
 
 
-
-
 const getAllEditorPicks = async (userId?: string) => {
     const today = new Date();
     const dayOfWeek = today.getDay();
