@@ -15,5 +15,7 @@ router.get('/:id', (0, auth_1.auth)(client_1.UserRole.ADMIN, client_1.UserRole.U
 router.get('/:email', (0, auth_1.auth)(client_1.UserRole.ADMIN, client_1.UserRole.USER), payment_controller_1.paymentController.getAllPaymentByUser);
 router.post('/', (0, auth_1.auth)(client_1.UserRole.ADMIN, client_1.UserRole.USER), payment_controller_1.paymentController.payment);
 router.post('/success/:tId', payment_controller_1.paymentController.successController);
+router.patch('/payment-approved/:id', (0, auth_1.auth)(client_1.UserRole.ADMIN), payment_controller_1.paymentController.updateAdminStatus);
+router.delete('/rejected-payment/:paymentId', (0, auth_1.auth)(client_1.UserRole.ADMIN), payment_controller_1.paymentController.rejectPayment);
 router.delete('/payment/failed/:tId', payment_controller_1.paymentController.failedController);
 exports.paymentRouter = router;

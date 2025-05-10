@@ -33,6 +33,7 @@ const payment = async (data: Partial<TPaymentData>, user: any) => {
     userId: user.id,
     contentId: contentId || '',
     paymentStatus: false,
+    adminStatus: false
   };
   await prisma.payment.create({
     data: transactionData,
@@ -101,6 +102,41 @@ const getAllPaymentByUser = async (id: string) => {
   }
 }
 
+export const updateAdminStatus = async (id: string) => {
+  const isExist = await prisma.payment.findFirst({
+    where: {
+      id: id
+    }
+  })
+  if (!isExist) {
+    throw new ApiError(StatusCodes.FORBIDDEN, "Payment not found")
+  }
+  const result=await prisma.payment.update({
+    where:{
+      id:id
+    },
+    data:{
+      adminStatus:true
+    }
+  })
+  return result
+}
+
+const rejectPayment = async (id: string) => {
+  const isExist = await prisma.payment.findFirst({
+    where: {
+      id: id
+    }
+  })
+  if (!isExist) {
+    throw new ApiError(StatusCodes.FORBIDDEN, "Payment not found")
+  }
+    const result=await prisma.payment.delete({
+      where:{
+        id:id
+      }
+    })
+}
 
 const sellInfo = async () => {
 
@@ -115,42 +151,42 @@ const sellInfo = async () => {
         total_amount: true
       }
     })
-    const total_movie_sell =  await tx.payment.aggregate({
-      where:{
-        paymentStatus:true,
-        video:{
-          category:"MOVIE"
+    const total_movie_sell = await tx.payment.aggregate({
+      where: {
+        paymentStatus: true,
+        video: {
+          category: "MOVIE"
         }
       },
-      _sum:{
-        total_amount:true
+      _sum: {
+        total_amount: true
       },
-      _count:{
-        paymentStatus:true
+      _count: {
+        paymentStatus: true
       }
     })
-    const total_series_sell =  await tx.payment.aggregate({
-      where:{
-        paymentStatus:true,
-        video:{
-          category:"SERIES"
+    const total_series_sell = await tx.payment.aggregate({
+      where: {
+        paymentStatus: true,
+        video: {
+          category: "SERIES"
         }
       },
-      _sum:{
-        total_amount:true
+      _sum: {
+        total_amount: true
       },
       _count: {
         paymentStatus: true
       }
     })
 
-   
+
 
     return {
       totalSell: totalSell,
       total_Profit: total_Profit._sum.total_amount,
-      total_movie_sell:total_movie_sell._sum.total_amount,
-      total_movie_sell_count:total_movie_sell._count.paymentStatus,
+      total_movie_sell: total_movie_sell._sum.total_amount,
+      total_movie_sell_count: total_movie_sell._count.paymentStatus,
       total_series_sell: total_series_sell._sum.total_amount,
       total_series_sell_count: total_series_sell._count.paymentStatus,
 
@@ -162,15 +198,13 @@ const sellInfo = async () => {
   return sellInfo
 
 }
-
-
-
-
 export const paymentService = {
   payment,
   successPayment,
   getAllPayment,
   getAllPaymentByUser,
   failedPayment,
+  updateAdminStatus,
+  rejectPayment,
   sellInfo
 }

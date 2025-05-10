@@ -34,13 +34,88 @@ const addToWatchList = (user, payload) => __awaiter(void 0, void 0, void 0, func
     return result;
 });
 const getWatchList = (user) => __awaiter(void 0, void 0, void 0, function* () {
-    if (!user) {
-        throw new apiError_1.default(http_status_1.default.UNAUTHORIZED, "User is not authenticated or doesn't exist");
-    }
-    const result = yield prisma_1.default.watchList.findMany({
+    const result = yield prisma_1.default.video.findMany({
         where: {
-            userId: user === null || user === void 0 ? void 0 : user.id
-        }
+            watchList: {
+                some: {
+                    userId: user === null || user === void 0 ? void 0 : user.id,
+                },
+            },
+        },
+        orderBy: {
+            createdAt: 'desc',
+        },
+        include: {
+            Comment: {
+                where: {
+                    OR: [
+                        { status: 'APPROVED' },
+                        { userId: user === null || user === void 0 ? void 0 : user.id },
+                    ],
+                    parentCommentId: null,
+                },
+                include: {
+                    replies: {
+                        where: {
+                            OR: [
+                                { status: 'APPROVED' },
+                                { userId: user === null || user === void 0 ? void 0 : user.id },
+                            ],
+                        },
+                        include: {
+                            user: true,
+                        },
+                    },
+                    user: true,
+                    Like: {
+                        where: { userId: user === null || user === void 0 ? void 0 : user.id },
+                        select: { commentId: true },
+                    },
+                },
+            },
+            review: {
+                where: {
+                    OR: [
+                        { status: 'APPROVED' },
+                        { userId: user === null || user === void 0 ? void 0 : user.id },
+                    ],
+                },
+                include: {
+                    user: true,
+                },
+            },
+            VideoTag: {
+                select: {
+                    tag: true,
+                },
+            },
+            Like: {
+                where: { userId: user === null || user === void 0 ? void 0 : user.id },
+                select: {
+                    videoId: true,
+                },
+            },
+            watchList: {
+                where: { userId: user === null || user === void 0 ? void 0 : user.id },
+                select: { videoId: true },
+            },
+            EditorsPick: true,
+        },
+    });
+    result.forEach((video) => {
+        var _a, _b, _c;
+        const likedVideoIds = ((_a = video.Like) === null || _a === void 0 ? void 0 : _a.map((like) => like.videoId)) || [];
+        const watchListVideoIds = ((_b = video.watchList) === null || _b === void 0 ? void 0 : _b.map((w) => w.videoId)) || [];
+        video.liked = likedVideoIds.includes(video.id);
+        video.inWatchList = watchListVideoIds.includes(video.id);
+        video.totalComments = ((_c = video.Comment) === null || _c === void 0 ? void 0 : _c.length) || 0;
+        const ratings = (video.review || [])
+            .map((r) => r.rating)
+            .filter((r) => typeof r === 'number');
+        const overallRating = ratings.length > 0
+            ? parseFloat((ratings.reduce((acc, r) => acc + r, 0) / ratings.length).toFixed(2))
+            : 0;
+        video.overallRating = overallRating;
     });
     return result;
 });

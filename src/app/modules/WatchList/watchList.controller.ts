@@ -18,7 +18,7 @@ const addToWatchList = catchAsync(async (req, res) => {
 
 
 const getWatchList = catchAsync(async (req, res) => {
-    const user = req.user;
+    const user = req.user
     const result = await WatchServices.getWatchList(user as IAuthUser);
     sendResponse(res, {
         statuscode: httpStatus.OK,

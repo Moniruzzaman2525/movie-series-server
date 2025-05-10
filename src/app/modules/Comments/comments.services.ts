@@ -52,7 +52,7 @@ const addComment = async (user: any, payload: any) => {
                 [target + "Id"]: payload[`${target}Id`],
             },
         });
-        
+
         // const pushCommentId = await prisma.video.update({
         //     where: {
         //         id: result.videoId!,
@@ -182,10 +182,11 @@ const editComment = async (user: IAuthUser, commentId: string, payload: any) => 
     const comment = await prisma.comment.findFirstOrThrow({
         where: {
             id: commentId,
-            status: CommentStatus.PENDING,
         },
     });
 
+
+     console.log(userData);
     if (comment.userId !== userData.id) {
         throw new ApiError(httpStatus.FORBIDDEN, 'You are not authorized to edit this review');
     }
@@ -253,21 +254,21 @@ const getCommentByUser = async (userId: string) => {
     return result;
 }
 
-const getCommentByReviewId=async(id:string)=>{
-    const isExist=await prisma.comment.findFirst({
-        where:{
-            reviewId:id
+const getCommentByReviewId = async (id: string) => {
+    const isExist = await prisma.comment.findFirst({
+        where: {
+            reviewId: id
         }
     })
-    if(!isExist){
-        throw new ApiError(httpStatus.NOT_FOUND,'Reply not found')
+    if (!isExist) {
+        throw new ApiError(httpStatus.NOT_FOUND, 'Reply not found')
     }
     const result = await prisma.comment.findMany({
         where: {
             reviewId: id,
         },
-        include:{
-            user:true
+        include: {
+            user: true
         }
     }
     );

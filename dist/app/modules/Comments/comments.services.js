@@ -159,9 +159,9 @@ const editComment = (user, commentId, payload) => __awaiter(void 0, void 0, void
     const comment = yield prisma_1.default.comment.findFirstOrThrow({
         where: {
             id: commentId,
-            status: client_1.CommentStatus.PENDING,
         },
     });
+    console.log(userData);
     if (comment.userId !== userData.id) {
         throw new apiError_1.default(http_status_1.default.FORBIDDEN, 'You are not authorized to edit this review');
     }
