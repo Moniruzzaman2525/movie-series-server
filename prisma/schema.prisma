@@ -1,0 +1,278 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  id        String      @id @default(uuid())
+  name      String
+  email     String      @unique
+  password  String
+  role      UserRole    @default(USER)
+  createAt  DateTime    @default(now())
+  updateAt  DateTime    @updatedAt
+  isDeleted Boolean     @default(false)
+  video     Video[]
+  like      Like[]
+  Review    Review[]
+  Comment   Comment[]
+  WatchList WatchList[]
+  Purchase  Purchase[]
+  Payment   Payment[]
+
+  @@map("user")
+}
+
+model Video {
+  id                String        @id @default(uuid())
+  title             String
+  genre             GenreOption
+  thumbnailImage    String?
+  video             String?
+  director          String
+  releaseYear       Int
+  category          Category
+  cast              String
+  streamingPlatform String
+  streamingLink      String?
+  description       String
+  like              Int?          @default(0)
+  price             Float
+  dislike           Int?          @default(0)
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+  userId            String
+  user              User          @relation(fields: [userId], references: [id])
+  review            Review[]
+  watchList         WatchList[]
+  purchase          Purchase[]
+  Comment           Comment[]
+  Like              Like[]
+  VideoTag          VideoTag[]
+  Payment           Payment[]
+  EditorsPick       EditorsPick[]
+
+  @@map("video")
+}
+
+model Like {
+  id String @id @default(uuid())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  videoId String?
+  video   Video?  @relation(fields: [videoId], references: [id])
+
+  reviewId String?
+  review   Review? @relation(fields: [reviewId], references: [id])
+
+  commentId String?
+  comment   Comment? @relation(fields: [commentId], references: [id])
+
+  createdAt DateTime @default(now())
+
+  @@unique([userId, videoId])
+  @@unique([userId, reviewId])
+  @@unique([userId, commentId])
+  @@map("likes")
+}
+
+model Review {
+  id     String @id @default(uuid())
+  rating Int
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  videoId String
+  video   Video  @relation(fields: [videoId], references: [id])
+
+  content   String
+  createdAt DateTime @default(now())
+
+  like       Int?    @default(0)
+  hasSpoiler Boolean @default(false)
+
+  status  ReviewStatus @default(PENDING)
+  Comment Comment[]
+  Like    Like[]
+  tag     String?
+
+  @@map("reviews")
+}
+
+model Payment {
+  id            String   @id @default(uuid())
+  tran_id       String   @unique
+  total_amount  Float
+  cus_name      String
+  cus_email     String
+  cus_phone     String
+  cus_add1      String
+  paymentStatus Boolean  @default(false)
+  adminStatus Boolean @default(false)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  userId        String
+  contentId     String
+  user          User     @relation(fields: [userId], references: [id])
+  video         Video    @relation(fields: [contentId], references: [id])
+
+  @@map("payments")
+}
+
+model Comment {
+  id     String @id @default(uuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  videoId String?
+  video   Video?  @relation(fields: [videoId], references: [id])
+
+  status    CommentStatus @default(PENDING)
+  content   String
+  createdAt DateTime      @default(now())
+  like      Int?          @default(0)
+
+  reviewId String?
+  review   Review? @relation(fields: [reviewId], references: [id])
+
+  parentCommentId String?
+  parentComment   Comment? @relation("CommentReplies", fields: [parentCommentId], references: [id])
+
+  replies Comment[] @relation("CommentReplies")
+  Like    Like[]
+
+  @@map("comments")
+}
+
+model WatchList {
+  id String @id @default(uuid())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  videoId String
+  video   Video  @relation(fields: [videoId], references: [id])
+
+  createAt DateTime @default(now())
+
+  @@map("watch-list")
+}
+
+model Purchase {
+  id String @id @default(uuid())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  videoId String
+  video   Video  @relation(fields: [videoId], references: [id])
+
+  type      PurchaseType
+  expiresAt DateTime?
+  paymentId String
+  createAt  DateTime     @default(now())
+
+  @@map("purchases")
+}
+
+model Tag {
+  id        String     @id @default(uuid())
+  name      String     @unique
+  videoTags VideoTag[] // Change to videoTags instead of reviewTags
+
+  @@map("tags")
+}
+
+model VideoTag {
+  videoId String
+  tagId   String
+
+  video Video @relation(fields: [videoId], references: [id])
+  tag   Tag   @relation(fields: [tagId], references: [id])
+
+  @@id([videoId, tagId])
+  @@map("video_tags")
+}
+
+model EditorsPick {
+  id        String   @id @default(uuid())
+  videoId   String
+  video     Video    @relation(fields: [videoId], references: [id])
+  createdAt DateTime @default(now())
+
+  @@map("editors_pick")
+}
+
+enum ReviewStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum CommentStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum Category {
+  MOVIE
+  SERIES
+}
+
+enum PurchaseType {
+  BUY
+  RENT
+}
+
+enum UserRole {
+  USER
+  ADMIN
+}
+
+enum StreamingPlatform {
+  NETFLIX
+  DISNEY
+  HBO
+  AMAZON
+  APPLE
+  YOUTUBE
+  SPOTIFY
+}
+
+enum GenreOption {
+  ACTION
+  ADVENTURE
+  ANIMATION
+  COMEDY
+  DRAMA
+  HORROR
+  MYSTERY
+  ROMANCE
+  SCIENCE_FICTION
+  THRILLER
+  FANTASY
+  DOCUMENTARY
+  CRIME
+  HISTORICAL
+  MUSIC
+  WAR
+  WESTERN
+  FAMILY
+  BIOGRAPHY
+  SPORT
+  MUSICAL
+  SUPERHERO
+  PSYCHOLOGICAL
+  SLICE_OF_LIFE
+  TRAGEDY
+  POLITICAL
+  SATIRE
+}
