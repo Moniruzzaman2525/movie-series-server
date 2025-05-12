@@ -37,6 +37,7 @@ const createContent = (req) => __awaiter(void 0, void 0, void 0, function* () {
             const uploadedImage = files.thumbnailImage[0];
             req.body.thumbnailImage = uploadedImage.path;
         }
+        console.log(req.body);
         const content = yield prisma.video.create({
             data: Object.assign(Object.assign({}, req.body), { userId: user.id }),
         });

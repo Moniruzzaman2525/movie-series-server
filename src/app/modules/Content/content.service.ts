@@ -16,6 +16,8 @@ const createContent = async (req: any) => {
       const uploadedImage = files.thumbnailImage[0];
       req.body.thumbnailImage = uploadedImage.path;
     }
+
+    console.log(req.body)
     const content = await prisma.video.create({
       data: {
         ...req.body,
