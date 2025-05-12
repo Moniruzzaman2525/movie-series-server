@@ -1,5 +1,4 @@
 import httpStatus from 'http-status';
-import { uploadToCloudinary } from '../../../utils';
 import { Prisma, PrismaClient } from '@prisma/client';
 
 import { calculatePagination } from './content.constans';
@@ -10,23 +9,26 @@ const prisma = new PrismaClient();
 
 const createContent = async (req: any) => {
   try {
-    const file = req.file;
-    const user = req.user
-    if (file) {
-      const uploadImage = await uploadToCloudinary(file);
-      req.body.thumbnailImage = uploadImage.secure_url;
+    const user = req.user;
+    const files = req.files;
+
+    if (files && files.thumbnailImage && files.thumbnailImage.length > 0) {
+      const uploadedImage = files.thumbnailImage[0];
+      req.body.thumbnailImage = uploadedImage.path;
     }
     const content = await prisma.video.create({
       data: {
         ...req.body,
-        userId: user.id
+        userId: user.id,
       },
     });
+
     return content;
   } catch (err) {
     throw new ApiError(httpStatus.FORBIDDEN, (err as Error).message);
   }
 };
+
 const getAllContent = async (params: SearchParams, options: TPaginationOptions, userId?: string) => {
   try {
     const { searchTerm, ...exactMatchFields } = params;
@@ -400,11 +402,11 @@ const getNewlyAdded = async (userId?: string) => {
 
 
 const updateContent = async (id: string, req: any) => {
-  const file = req.file;
+  const files = req.files;
 
-  if (file) {
-    const uploadImage = await uploadToCloudinary(file);
-    req.body.thumbnailImage = uploadImage.secure_url;
+  if (files && files.thumbnailImage && files.thumbnailImage.length > 0) {
+    const uploadedImage = files.thumbnailImage[0];
+    req.body.thumbnailImage = uploadedImage.path;
   }
   try {
     const isExist = await prisma.video.findUnique({

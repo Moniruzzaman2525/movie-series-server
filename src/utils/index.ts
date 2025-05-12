@@ -1,18 +1,8 @@
 import multer from 'multer';
 import { v2 as cloudinary } from 'cloudinary';
+import { CloudinaryStorage } from 'multer-storage-cloudinary';
 import config from '../config';
-import path from 'path';
-import { TCloudinary, TFile } from '../app/interface/cloudeinary';
-import fs from 'fs';
 
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, path.join(process.cwd(), 'uploads'));
-  },
-  filename: function (req, file, cb) {
-    cb(null, file.originalname);
-  },
-});
 
 cloudinary.config({
   cloud_name: config.cloud.cloud_name,
@@ -20,19 +10,24 @@ cloudinary.config({
   api_secret: config.cloud.api_secret,
 });
 
-//* Upload to Cloudinary
-export const uploadToCloudinary = async (file: TFile): Promise<TCloudinary> => {
-  return new Promise((resolve, reject) => {
-    cloudinary.uploader.upload(file.path, (error: Error, result: TCloudinary) => {
-      fs.unlinkSync(file.path);
-      if (error) {
-        reject(error);
-      } else {
-        resolve(result);
-      }
-    });
-  });
-  // cloudinary.uploader.upload
+
+const removeExtension = (filename: string) => {
+  return filename.split('.').slice(0, -1).join('.');
 };
 
-export const upload = multer({ storage: storage });
+
+const storage = new CloudinaryStorage({
+  cloudinary,
+  params: {
+    public_id: (_req, file) =>
+      Math.random().toString(36).substring(2) +
+      '-' +
+      Date.now() +
+      '-' +
+      file.fieldname +
+      '-' +
+      removeExtension(file.originalname),
+  },
+});
+
+export const multerUpload = multer({ storage });

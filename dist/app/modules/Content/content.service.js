@@ -25,18 +25,17 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.contentService = void 0;
 const http_status_1 = __importDefault(require("http-status"));
-const utils_1 = require("../../../utils");
 const client_1 = require("@prisma/client");
 const content_constans_1 = require("./content.constans");
 const apiError_1 = __importDefault(require("../../errors/apiError"));
 const prisma = new client_1.PrismaClient();
 const createContent = (req) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const file = req.file;
         const user = req.user;
-        if (file) {
-            const uploadImage = yield (0, utils_1.uploadToCloudinary)(file);
-            req.body.thumbnailImage = uploadImage.secure_url;
+        const files = req.files;
+        if (files && files.thumbnailImage && files.thumbnailImage.length > 0) {
+            const uploadedImage = files.thumbnailImage[0];
+            req.body.thumbnailImage = uploadedImage.path;
         }
         const content = yield prisma.video.create({
             data: Object.assign(Object.assign({}, req.body), { userId: user.id }),
@@ -381,10 +380,10 @@ const getNewlyAdded = (userId) => __awaiter(void 0, void 0, void 0, function* ()
     }
 });
 const updateContent = (id, req) => __awaiter(void 0, void 0, void 0, function* () {
-    const file = req.file;
-    if (file) {
-        const uploadImage = yield (0, utils_1.uploadToCloudinary)(file);
-        req.body.thumbnailImage = uploadImage.secure_url;
+    const files = req.files;
+    if (files && files.thumbnailImage && files.thumbnailImage.length > 0) {
+        const uploadedImage = files.thumbnailImage[0];
+        req.body.thumbnailImage = uploadedImage.path;
     }
     try {
         const isExist = yield prisma.video.findUnique({
