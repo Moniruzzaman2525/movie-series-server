@@ -2,7 +2,7 @@
 
 
 ## Frontend Live Link: https://movie-series-client.vercel.app
-## Backend Live Link: https://movie-series-server.vercel.app/
+## Backend Live Link: https://movie-series-server.vercel.app
 
 A modern full-stack platform for discovering, reviewing, purchasing, and streaming movies and TV shows. Users can rate, review, buy/rent content, and interact through likes, comments, and watchlists. Admins can manage content, moderate reviews, and view analytics.
 
@@ -80,7 +80,7 @@ To get started with **Movie-series**, follow these steps:
 
 For inquiries or support, reach out to:
 
-📧 Email: web.moniruzzaman1@gmail.com, abireshan32@gmail.com, kazifahim661@gmail.com
+📧 Email: web.moniruzzaman1@gmail.com, abireshan32@gmail.com, kazifahim661@gmail.com, rabeyariya251@gmail.com
 
 📍 Address: Dhaka, Bangladesh
 
