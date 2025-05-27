@@ -37,11 +37,28 @@ const createContent = (req) => __awaiter(void 0, void 0, void 0, function* () {
             const uploadedImage = files.thumbnailImage[0];
             req.body.thumbnailImage = uploadedImage.path;
         }
-        console.log(req.body);
         const content = yield prisma.video.create({
             data: Object.assign(Object.assign({}, req.body), { userId: user.id }),
         });
         return content;
+    }
+    catch (err) {
+        throw new apiError_1.default(http_status_1.default.FORBIDDEN, err.message);
+    }
+});
+const countMovieAndSeries = () => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const movie = yield prisma.video.count({
+            where: {
+                category: 'MOVIE',
+            },
+        });
+        const series = yield prisma.video.count({
+            where: {
+                category: 'SERIES',
+            },
+        });
+        return { movie, series };
     }
     catch (err) {
         throw new apiError_1.default(http_status_1.default.FORBIDDEN, err.message);
@@ -517,4 +534,5 @@ exports.contentService = {
     contentGetCategory,
     getTopRatedThisWeek,
     getNewlyAdded,
+    countMovieAndSeries,
 };

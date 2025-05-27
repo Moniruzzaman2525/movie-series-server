@@ -27,6 +27,15 @@ const createContent = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, 
         statuscode: http_status_1.default.CREATED,
     });
 }));
+const countMovieAndSeries = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield content_service_1.contentService.countMovieAndSeries();
+    (0, sendResponse_1.default)(res, {
+        success: true,
+        message: 'Movie and series counting successfully',
+        data: result,
+        statuscode: http_status_1.default.CREATED,
+    });
+}));
 const getAllContent = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const user = req.user;
     const userId = user ? user.id : null;
@@ -109,5 +118,6 @@ exports.contentController = {
     getSingleContent,
     contentByCategory,
     getTopRatedThisWeek,
-    getNewlyAdded
+    getNewlyAdded,
+    countMovieAndSeries
 };
