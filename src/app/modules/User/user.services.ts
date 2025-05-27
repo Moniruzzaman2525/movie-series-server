@@ -79,7 +79,6 @@ const changePassword = async (user: IAuthUser, payload: any) => {
     },
   })
 
-  console.log(payload);
 
   if (!currentUser) {
     throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
@@ -90,13 +89,13 @@ const changePassword = async (user: IAuthUser, payload: any) => {
   if (!isCorrectPassword) {
     throw new Error('Invalid password');
   }
-
+  const hashPassword: string = await bcrypt.hash(payload.password, 12);
   const result = await prisma.user.update({
     where: {
       id: user.id as string,
     },
     data: {
-      password: payload.password,
+      password: hashPassword
     },
   });
   return result;

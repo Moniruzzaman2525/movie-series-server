@@ -15,6 +15,7 @@ router.get('/category', content_controller_1.contentController.contentByCategory
 router.get('/', (0, alowAuth_1.default)(client_1.UserRole.USER, client_1.UserRole.ADMIN), content_controller_1.contentController.getAllContent);
 router.get('/get-top-rated', (0, alowAuth_1.default)(client_1.UserRole.USER, client_1.UserRole.ADMIN), content_controller_1.contentController.getTopRatedThisWeek);
 router.get('/get-newly-added', (0, alowAuth_1.default)(client_1.UserRole.USER, client_1.UserRole.ADMIN), content_controller_1.contentController.getNewlyAdded);
+router.get('/count-movies-series', content_controller_1.contentController.countMovieAndSeries);
 router.get('/:id', content_controller_1.contentController.getSingleContent);
 router.post('/', utils_1.multerUpload.fields([{ name: 'thumbnailImage' }]), (0, auth_1.auth)(client_1.UserRole.ADMIN), (req, res, next) => {
     if (typeof req.body.data === 'string') {
