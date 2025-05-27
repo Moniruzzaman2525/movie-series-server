@@ -26,6 +26,39 @@ const createUser = (0, catchAsync_1.default)((req, res, next) => __awaiter(void 
         data: result,
     });
 }));
+const getMe = (0, catchAsync_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const user = req.user;
+    const result = yield user_services_1.UserServices.getMe(user);
+    (0, sendResponse_1.default)(res, {
+        statuscode: http_status_1.default.CREATED,
+        success: true,
+        message: 'Profile get successfully',
+        data: result,
+    });
+}));
+const updateProfile = (0, catchAsync_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const user = req.user;
+    const result = yield user_services_1.UserServices.updateProfile(user, req.body);
+    (0, sendResponse_1.default)(res, {
+        statuscode: http_status_1.default.CREATED,
+        success: true,
+        message: 'Profile update successfully',
+        data: result,
+    });
+}));
+const changePassword = (0, catchAsync_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const user = req.user;
+    const result = yield user_services_1.UserServices.changePassword(user, req.body);
+    (0, sendResponse_1.default)(res, {
+        statuscode: http_status_1.default.CREATED,
+        success: true,
+        message: 'Password update successfully',
+        data: result,
+    });
+}));
 exports.UserController = {
     createUser,
+    getMe,
+    updateProfile,
+    changePassword
 };
