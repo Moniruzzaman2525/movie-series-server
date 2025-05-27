@@ -2,6 +2,7 @@ import prisma from '../../../helpers/prisma';
 import bcrypt from 'bcrypt';
 import ApiError from '../../errors/apiError';
 import httpStatus from 'http-status';
+import { IAuthUser } from '../../interface/common';
 const createUser = async (payload: any) => {
   const existingUser = await prisma.user.findFirst({
     where: {
@@ -30,6 +31,46 @@ const createUser = async (payload: any) => {
   return result;
 };
 
+const getMe = async (user: IAuthUser) => {
+  if (!user) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
+  }
+
+  const result = await prisma.user.findUnique({
+    where: {
+      id: user.id as string,
+    },
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      role: true,
+      createAt: true,
+      updateAt: true,
+    },
+  });
+  return result;
+};
+
+const updateProfile = async (user: IAuthUser, payload: any) => {
+  if (!user) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
+  }
+  const result = await prisma.user.update({
+    where: {
+      id: user.id as string,
+    },
+    data: {
+      name: payload.name,
+      email: user.email,
+    },
+  });
+  return result;
+};
+
+
 export const UserServices = {
   createUser,
+  getMe,
+  updateProfile
 };
