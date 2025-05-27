@@ -3,7 +3,6 @@ import catchAsync from '../../../shared/catchAsync';
 import sendResponse from '../../../shared/sendResponse';
 import { contentService } from './content.service';
 import { pick } from './content.constans';
-import { IAuthUser } from '../../interface/common';
 
 const createContent = catchAsync(async (req, res) => {
   const result = await contentService.createContent(req);
@@ -14,15 +13,26 @@ const createContent = catchAsync(async (req, res) => {
     statuscode: httpStatus.CREATED,
   });
 });
+const countMovieAndSeries = catchAsync(async (req, res) => {
+  const result = await contentService.countMovieAndSeries();
+  sendResponse(res, {
+    success: true,
+    message: 'Movie and series counting successfully',
+    data: result,
+    statuscode: httpStatus.CREATED,
+  });
+});
 
 const getAllContent = catchAsync(async (req, res) => {
   const user = req.user
   const userId = user ? user.id : null;
 
 
-  const filters = pick(req.query, ['category', 'genre', "releaseYear", 'searchTerm','rating','streamingPlatform']);
+  const filters = pick(req.query, ['category', 'genre', "releaseYear", 'searchTerm', 'rating', 'streamingPlatform']);
   const options = pick(req.query, ['page', 'limit', 'sortBy', 'sortOrder']);
+
   const result = await contentService.getAllContent(filters, options, userId);
+
   sendResponse(res, {
     success: true,
     message: 'Content fetched successfully',
@@ -108,5 +118,6 @@ export const contentController = {
   getSingleContent,
   contentByCategory,
   getTopRatedThisWeek,
-  getNewlyAdded
+  getNewlyAdded,
+  countMovieAndSeries
 };

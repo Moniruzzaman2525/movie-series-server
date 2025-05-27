@@ -17,7 +17,6 @@ const createContent = async (req: any) => {
       req.body.thumbnailImage = uploadedImage.path;
     }
 
-    console.log(req.body)
     const content = await prisma.video.create({
       data: {
         ...req.body,
@@ -31,10 +30,30 @@ const createContent = async (req: any) => {
   }
 };
 
+const countMovieAndSeries = async () => {
+  try {
+    const movie = await prisma.video.count({
+      where: {
+        category: 'MOVIE',
+      },
+    });
+    const series = await prisma.video.count({
+      where: {
+        category: 'SERIES',
+      },
+    });
+
+    return { movie, series };
+  } catch (err) {
+    throw new ApiError(httpStatus.FORBIDDEN, (err as Error).message);
+  }
+};
+
 const getAllContent = async (params: SearchParams, options: TPaginationOptions, userId?: string) => {
   try {
     const { searchTerm, ...exactMatchFields } = params;
     const { page, limit, sortBy, sortOrder, skip } = calculatePagination(options);
+
 
     const conditions: Prisma.VideoWhereInput[] = [];
     const searchableFields: (keyof Prisma.VideoWhereInput)[] = ['title', 'description', 'director', 'cast'];
@@ -147,6 +166,9 @@ const getAllContent = async (params: SearchParams, options: TPaginationOptions, 
         EditorsPick: true
       },
     });
+
+
+
     result.forEach((video) => {
       const likedVideoIds = video.Like ? video.Like.map(like => like.videoId) : [];
       const watchListVideoIds = video.watchList ? video.watchList.map(w => w.videoId) : [];
@@ -167,10 +189,10 @@ const getAllContent = async (params: SearchParams, options: TPaginationOptions, 
 
 
 
-
     const total = await prisma.video.count({
       where: whereConditions,
     });
+
 
     return {
       meta: {
@@ -553,4 +575,5 @@ export const contentService = {
   contentGetCategory,
   getTopRatedThisWeek,
   getNewlyAdded,
+  countMovieAndSeries,
 };
