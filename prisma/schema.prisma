@@ -29,7 +29,7 @@ model User {
 }
 
 model Video {
-  id                String        @id @default(uuid())
+  id                String            @id @default(uuid())
   title             String
   genre             GenreOption
   thumbnailImage    String?
@@ -38,16 +38,16 @@ model Video {
   releaseYear       Int
   category          Category
   cast              String
-  streamingPlatform String
+  streamingPlatform StreamingPlatform // ✅ Now enum
   streamingLink     String?
   description       String
-  like              Int?          @default(0)
+  like              Int?              @default(0)
   price             Float
-  dislike           Int?          @default(0)
-  createdAt         DateTime      @default(now())
-  updatedAt         DateTime      @updatedAt
+  dislike           Int?              @default(0)
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
   userId            String
-  user              User          @relation(fields: [userId], references: [id])
+  user              User              @relation(fields: [userId], references: [id])
   review            Review[]
   watchList         WatchList[]
   purchase          Purchase[]
