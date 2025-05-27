@@ -10,5 +10,6 @@ const router = express.Router();
 router.get('/me', auth(UserRole.USER, UserRole.ADMIN), UserController.getMe);
 router.post('/', validateRequest(UserValidationSchema.create), UserController.createUser);
 router.patch('/update-profile', auth(UserRole.USER, UserRole.ADMIN), UserController.updateProfile);
+router.patch('/update-password', auth(UserRole.USER, UserRole.ADMIN), UserController.changePassword);
 
 export const UserRoutes = router;

@@ -68,9 +68,43 @@ const updateProfile = async (user: IAuthUser, payload: any) => {
   return result;
 };
 
+const changePassword = async (user: IAuthUser, payload: any) => {
+  if (!user) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
+  }
+
+  const currentUser = await prisma.user.findUnique({
+    where: {
+      id: user.id as string,
+    },
+  })
+
+  console.log(payload);
+
+  if (!currentUser) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
+  }
+
+  const isCorrectPassword: boolean = await bcrypt.compare(payload.oldPassword, currentUser.password);
+
+  if (!isCorrectPassword) {
+    throw new Error('Invalid password');
+  }
+
+  const result = await prisma.user.update({
+    where: {
+      id: user.id as string,
+    },
+    data: {
+      password: payload.password,
+    },
+  });
+  return result;
+};
 
 export const UserServices = {
   createUser,
   getMe,
-  updateProfile
+  updateProfile,
+  changePassword
 };

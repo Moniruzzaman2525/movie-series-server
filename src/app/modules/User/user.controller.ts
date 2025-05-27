@@ -36,9 +36,21 @@ const updateProfile = catchAsync(async (req, res, next) => {
     data: result,
   });
 });
+const changePassword = catchAsync(async (req, res, next) => {
+  const user = req.user;
+  const result = await UserServices.changePassword(user as IAuthUser, req.body);
+
+  sendResponse(res, {
+    statuscode: httpStatus.CREATED,
+    success: true,
+    message: 'Password update successfully',
+    data: result,
+  });
+});
 
 export const UserController = {
   createUser,
   getMe,
-  updateProfile
+  updateProfile,
+  changePassword
 };
