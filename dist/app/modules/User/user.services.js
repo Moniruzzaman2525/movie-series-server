@@ -39,6 +39,70 @@ const createUser = (payload) => __awaiter(void 0, void 0, void 0, function* () {
     });
     return result;
 });
+const getMe = (user) => __awaiter(void 0, void 0, void 0, function* () {
+    if (!user) {
+        throw new apiError_1.default(http_status_1.default.NOT_FOUND, 'User not found');
+    }
+    const result = yield prisma_1.default.user.findUnique({
+        where: {
+            id: user.id,
+        },
+        select: {
+            id: true,
+            name: true,
+            email: true,
+            role: true,
+            createAt: true,
+            updateAt: true,
+        },
+    });
+    return result;
+});
+const updateProfile = (user, payload) => __awaiter(void 0, void 0, void 0, function* () {
+    if (!user) {
+        throw new apiError_1.default(http_status_1.default.NOT_FOUND, 'User not found');
+    }
+    const result = yield prisma_1.default.user.update({
+        where: {
+            id: user.id,
+        },
+        data: {
+            name: payload.name,
+            email: user.email,
+        },
+    });
+    return result;
+});
+const changePassword = (user, payload) => __awaiter(void 0, void 0, void 0, function* () {
+    if (!user) {
+        throw new apiError_1.default(http_status_1.default.NOT_FOUND, 'User not found');
+    }
+    const currentUser = yield prisma_1.default.user.findUnique({
+        where: {
+            id: user.id,
+        },
+    });
+    if (!currentUser) {
+        throw new apiError_1.default(http_status_1.default.NOT_FOUND, 'User not found');
+    }
+    const isCorrectPassword = yield bcrypt_1.default.compare(payload.oldPassword, currentUser.password);
+    if (!isCorrectPassword) {
+        throw new Error('Invalid password');
+    }
+    const hashPassword = yield bcrypt_1.default.hash(payload.password, 12);
+    const result = yield prisma_1.default.user.update({
+        where: {
+            id: user.id,
+        },
+        data: {
+            password: hashPassword
+        },
+    });
+    return result;
+});
 exports.UserServices = {
     createUser,
+    getMe,
+    updateProfile,
+    changePassword
 };
